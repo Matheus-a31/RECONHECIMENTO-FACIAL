@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title|default:"Sistema de Reconhecimento Facial" }}{% endblock title %}</title> 
+    
+    {% block extra_head %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% endblock extra_head %}
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-4xl">
+        
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+            {% block header_text %}
+            📸 {{ header_text|default:"Reconhecimento Facial" }}
+            {% endblock header_text %}
+        </h1>
+        
+        <hr class="mb-6">
+
+        {% block content %}
+        
+
+            <div id="status-area" class="text-center p-4 bg-gray-50 rounded-lg border">
+                <p class="text-lg text-blue-600 font-semibold mb-4">
+                    Status Atual: **Aguardando dados...**
+                </p>
+
+            </div>
+            
+        {% endblock content %}
+
+    </div>
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>
