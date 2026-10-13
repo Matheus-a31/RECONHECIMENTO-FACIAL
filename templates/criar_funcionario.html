@@ -1,62 +1,75 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Registrar Novo Funcionário
+Cadastrar Funcionário | BioPonto
 {% endblock title %}
 
-{% block header_text %}
-     Cadastro de Funcionário e Preparação para Coleta
-{% endblock header_text %}
-
 {% block content %}
+<div class="max-w-xl mx-auto space-y-6">
 
-    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+    <div class="bg-white p-7 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm">
         
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center border-b pb-4">
-            Preencha os Dados Pessoais
-        </h2>
-        
-        <p class="text-sm text-gray-600 mb-6 text-center">
-            Após o cadastro, você será redirecionado para a etapa de coleta de faces.
-        </p>
+        <div class="text-center pb-6 border-b border-slate-100">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <line x1="19" y1="8" x2="19" y2="14"></line>
+                    <line x1="22" y1="11" x2="16" y2="11"></line>
+                </svg>
+            </div>
+            <h1 class="text-xl font-bold text-slate-900 tracking-tight">Cadastro de Novo Funcionário</h1>
+            <p class="text-xs text-slate-500 mt-1">Preencha os dados abaixo para iniciar a preparação do perfil biométrico.</p>
+        </div>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-5 mt-6">
             {% csrf_token %}
-            
+
             <div>
-                <label for="{{ form.nome.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Nome Completo:</label>
+                <label for="{{ form.nome.id_for_label }}" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Nome Completo
+                </label>
                 {{ form.nome }}
                 {% if form.nome.errors %}
-                    <p class="text-red-500 text-xs italic mt-1">Nome: {{ form.nome.errors.as_text }}</p>
+                <p class="text-red-500 text-xs mt-1">{{ form.nome.errors.as_text }}</p>
                 {% endif %}
             </div>
 
             <div>
-                <label for="{{ form.cpf.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">CPF:</label>
+                <label for="{{ form.cpf.id_for_label }}" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    CPF (Documento)
+                </label>
                 {{ form.cpf }}
                 {% if form.cpf.errors %}
-                    <p class="text-red-500 text-xs italic mt-1">CPF: {{ form.cpf.errors.as_text }}</p>
+                <p class="text-red-500 text-xs mt-1">{{ form.cpf.errors.as_text }}</p>
                 {% endif %}
             </div>
 
             <div>
-                <label for="{{ form.foto.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Foto Principal:</label>
+                <label for="{{ form.foto.id_for_label }}" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Foto Principal (Referência Facial)
+                </label>
                 {{ form.foto }}
                 {% if form.foto.errors %}
-                    <p class="text-red-500 text-xs italic mt-1">Foto: {{ form.foto.errors.as_text }}</p>
+                <p class="text-red-500 text-xs mt-1">{{ form.foto.errors.as_text }}</p>
                 {% endif %}
-                <p class="text-gray-500 text-xs mt-1">Utilize uma imagem frontal e clara do rosto.</p>
+                <p class="text-slate-400 text-[11px] mt-1.5">Utilize uma imagem frontal, nítida e com iluminação neutra.</p>
             </div>
 
-            <button type="submit" 
-                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg 
-                           transition duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300">
-                Registrar e Iniciar Coleta de Faces
-            </button>
-            
-            <div class="text-center mt-4">
-                <a href="{% url 'criar_funcionario' %}" class="text-blue-500 hover:text-blue-700 text-sm font-medium">
-                    Cancelar e Voltar
+            <div class="pt-2">
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition duration-150">
+                    <span>Salvar e Prosseguir para Coleta</span>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-center pt-2">
+                <a href="{% url 'home' %}" class="text-xs font-medium text-slate-500 hover:text-slate-800 transition underline">
+                    Cancelar e Voltar ao Terminal
                 </a>
             </div>
 
@@ -64,4 +77,5 @@
 
     </div>
 
+</div>
 {% endblock content %}
