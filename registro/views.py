@@ -5,9 +5,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 from .forms import FuncionarioForm, ColetaFacesForm
 from .models import Funcionario, ColetaFaces, RegistroPonto
 from .camera import videoCamera
+from .acesso import (
+    autorizar_funcionario,
+    revogar_autorizacao,
+    pode_ver_historico,
+    mascarar_cpf,
+    requer_admin,
+    is_admin as checar_is_admin,
+    MSG_ACESSO_NEGADO,
+)
 
 camera_detection = videoCamera()
 # Variável em memória para guardar a última pessoa reconhecida pelo frame stream
@@ -53,6 +63,9 @@ def face_detection(request):
 
 def home(request):
     """Tela Inicial: Terminal de Reconhecimento Facial para Ponto Eletrônico."""
+    if not checar_is_admin(request.user):
+        revogar_autorizacao(request)
+
     hoje = timezone.localdate()
     pontos_hoje = RegistroPonto.objects.filter(data=hoje).select_related('funcionario').order_by('-id')[:10]
     
@@ -77,12 +90,15 @@ def api_status_reconhecimento(request):
     """Retorna via JSON a pessoa identificada atualmente pela câmera."""
     global last_recognized_person
     if last_recognized_person and last_recognized_person.get('funcionario_id'):
+        fid = last_recognized_person['funcionario_id']
+        # Autoriza temporariamente a sessão para o funcionário reconhecido facialmente
+        autorizar_funcionario(request, fid)
         return JsonResponse({
             'status': 'RECONHECIDO',
             'funcionario': {
-                'id': last_recognized_person['funcionario_id'],
+                'id': fid,
                 'nome': last_recognized_person['nome'],
-                'cpf': last_recognized_person.get('cpf', ''),
+                'cpf': mascarar_cpf(last_recognized_person.get('cpf', '')),
                 'foto_url': last_recognized_person.get('foto_url', ''),
                 'confidence': last_recognized_person.get('confidence')
             }
@@ -122,6 +138,17 @@ def api_bater_ponto(request):
 
         funcionario = get_object_or_404(Funcionario, id=funcionario_id)
         
+        # Proteção anti-spoofing: apenas admin ou a pessoa atualmente reconhecida na câmera pode bater o ponto
+        if not checar_is_admin(request.user):
+            reconhecido_id = last_recognized_person.get('funcionario_id') if last_recognized_person else None
+            if not reconhecido_id or int(reconhecido_id) != int(funcionario.id):
+                return JsonResponse({
+                    'error': 'Operação não autorizada: o rosto atual na câmera não corresponde ao colaborador solicitado.'
+                }, status=403)
+
+        # Autoriza temporariamente a sessão para o funcionário que bateu o ponto
+        autorizar_funcionario(request, funcionario.id)
+
         # Salva o registro de ponto
         ponto = RegistroPonto.objects.create(
             funcionario=funcionario,
@@ -160,6 +187,15 @@ def api_bater_ponto(request):
 def historico_funcionario(request, funcionario_id):
     """Tela com a lista e espelho de entradas e saídas dos últimos 30 dias do funcionário."""
     funcionario = get_object_or_404(Funcionario, id=funcionario_id)
+    
+    # Regra de Privacidade e Acesso:
+    # Apenas administradores ou o funcionário com autorização válida na sessão têm acesso aos pontos
+    if not pode_ver_historico(request, funcionario.id):
+        messages.error(request, MSG_ACESSO_NEGADO)
+        return redirect('home')
+
+    is_admin = checar_is_admin(request.user)
+
     hoje = timezone.localdate()
     data_limite = hoje - datetime.timedelta(days=30)
     
@@ -219,7 +255,11 @@ def historico_funcionario(request, funcionario_id):
 
     dias_agrupados = list(dias_dict.values())
 
-    outros_funcionarios = Funcionario.objects.exclude(id=funcionario.id).order_by('nome')
+    # Outros funcionários só são disponibilizados para consulta se for Administrador
+    if is_admin:
+        outros_funcionarios = Funcionario.objects.exclude(id=funcionario.id).order_by('nome')
+    else:
+        outros_funcionarios = Funcionario.objects.none()
 
     context = {
         'funcionario': funcionario,
@@ -237,12 +277,14 @@ def historico_funcionario(request, funcionario_id):
         'ultimo_ponto': pontos_query.first(),
         'filtro_tipo': filtro_tipo,
         'outros_funcionarios': outros_funcionarios,
+        'is_admin': is_admin,
         'status_acao': request.GET.get('status', ''),
     }
     return render(request, 'historico_ponto.html', context)
 
+@requer_admin
 def historico_geral(request):
-    """Visão geral do histórico de 30 dias com seletor de funcionário."""
+    """Visão geral do histórico de 30 dias com seletor de funcionário (Exclusivo para Administrador)."""
     funcionario_id = request.GET.get('funcionario')
     if funcionario_id:
         return redirect('historico_funcionario', funcionario_id=funcionario_id)
@@ -260,9 +302,11 @@ def historico_geral(request):
         'pontos_recentes': pontos_recentes,
         'hoje': hoje,
         'data_limite': data_limite,
+        'is_admin': True,
     }
     return render(request, 'historico_geral.html', context)
 
+@requer_admin
 def criar_funcionario(request):
     if request.method == 'POST':
         form = FuncionarioForm(request.POST, request.FILES)
@@ -275,6 +319,7 @@ def criar_funcionario(request):
         form = FuncionarioForm()
     return render(request, 'criar_funcionario.html', {'form': form})
 
+@requer_admin
 def criar_coleta_faces(request, funcionario_id):
     funcionario = get_object_or_404(Funcionario, id=funcionario_id)
     if request.method == 'POST':
@@ -292,6 +337,7 @@ def criar_coleta_faces(request, funcionario_id):
     }
     return render(request, 'criar_coleta_faces.html', context)
 
+@requer_admin
 def sucesso_funcionario(request, funcionario_id):
     funcionario = get_object_or_404(Funcionario, id=funcionario_id)
     coletas = funcionario.funcionario_coletas.all()
