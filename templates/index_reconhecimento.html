@@ -1,233 +1,175 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Terminal de Reconhecimento Biométrico | BioPonto
+Terminal de Reconhecimento Biométrico | BatePonto
 {% endblock title %}
 
 {% block content %}
 <div class="space-y-6">
 
-    <!-- Header com Data, Hora e Seletor de Modo (Entrada / Saída) -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 rounded-2xl p-6 text-white shadow-xl border border-slate-800">
-        <div class="space-y-1">
+    <!-- Header com Data, Hora e Seletor de Modo (Entrada "OI" / Saída "TCHAU") -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-slate-900 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-800">
+        <div class="space-y-2">
             <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full {% if tipo_modo == 'SAIDA' %}bg-amber-400{% else %}bg-emerald-400{% endif %} animate-pulse"></span>
-                <span class="text-xs font-semibold tracking-wider uppercase text-slate-400">
-                    Terminal Biométrico
+                <span class="w-2.5 h-2.5 rounded-full {% if tipo_modo == 'SAIDA' %}bg-red-400{% else %}bg-emerald-400{% endif %} animate-pulse"></span>
+                <span class="text-xs font-bold tracking-wider uppercase text-slate-400">
+                    Terminal Biométrico Inteligente
                 </span>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md {% if tipo_modo == 'SAIDA' %}bg-amber-500/20 text-amber-300 border border-amber-500/30{% else %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% endif %}">
+                <span id="badge-tipo-indicador" class="text-[11px] font-bold px-2.5 py-0.5 rounded-md {% if tipo_modo == 'SAIDA' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% endif %}">
                     Modo: Registro de {{ tipo_modo|title }}
                 </span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                 {% if tipo_modo == 'SAIDA' %}
-                Reconhecimento Facial — Saída
+                Reconhecimento Facial — Saída ("TCHAU")
                 {% else %}
-                Reconhecimento Facial — Entrada
+                Reconhecimento Facial — Entrada ("OI")
                 {% endif %}
             </h1>
-            <p class="text-slate-300 text-xs sm:text-sm">
+            <p class="text-slate-300 text-xs sm:text-sm max-w-xl">
                 {% if funcionario_alvo %}
                 Aguardando posicionamento de <strong>{{ funcionario_alvo.nome }}</strong> em frente à câmera.
                 {% else %}
-                Posicione seu rosto em frente à lente para registrar seu ponto e acessar seu espelho.
+                Posicione seu rosto em frente à lente para registrar seu ponto e acessar seu espelho individual de frequência.
                 {% endif %}
             </p>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             
-            <!-- Seletor Rápido de Modo (Entrada / Saída) -->
-            <div class="inline-flex p-1 bg-slate-800/80 rounded-xl border border-slate-700/60 text-xs font-semibold">
+            <!-- Seletor Rápido de Modo Inspirado no OiTchau (Entrada "OI" / Saída "TCHAU") -->
+            <div class="inline-flex p-1.5 bg-slate-800/90 rounded-2xl border border-slate-700/70 text-xs font-bold shadow-inner">
                 <button type="button" 
                         onclick="setModoPonto('ENTRADA')" 
                         id="tab-modo-entrada"
-                        class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition {% if tipo_modo == 'ENTRADA' %}bg-emerald-600 text-white shadow-sm{% else %}text-slate-400 hover:text-white{% endif %}">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 {% if tipo_modo == 'ENTRADA' %}bg-emerald-600 text-white shadow-md shadow-emerald-600/30{% else %}text-slate-400 hover:text-white{% endif %}">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                         <polyline points="10 17 15 12 10 7"></polyline>
                         <line x1="15" y1="12" x2="3" y2="12"></line>
                     </svg>
-                    <span>Entrada</span>
+                    <span>Entrada ("OI")</span>
                 </button>
                 <button type="button" 
                         onclick="setModoPonto('SAIDA')" 
                         id="tab-modo-saida"
-                        class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition {% if tipo_modo == 'SAIDA' %}bg-amber-600 text-white shadow-sm{% else %}text-slate-400 hover:text-white{% endif %}">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 {% if tipo_modo == 'SAIDA' %}bg-red-600 text-white shadow-md shadow-red-600/30{% else %}text-slate-400 hover:text-white{% endif %}">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
-                    <span>Saída</span>
+                    <span>Saída ("TCHAU")</span>
                 </button>
             </div>
 
-            <!-- Relógio Digital -->
-            <div class="bg-white/5 backdrop-blur-md px-5 py-2.5 rounded-xl border border-white/10 text-left sm:text-right">
-                <div id="live-clock" class="text-2xl sm:text-3xl font-mono font-bold tracking-wider text-slate-100">--:--:--</div>
-                <div id="live-date" class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider mt-0.5">Carregando data...</div>
-            </div>
+            <!-- Reusable Digital Clock Component -->
+            {% include "components/digital_clock.html" %}
 
         </div>
     </div>
 
-    <!-- Mensagens de Alerta -->
+    <!-- Mensagens de Alerta Dinâmicas -->
     <div id="alert-box" class="hidden transition-all duration-300"></div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Coluna Esquerda: Câmera com Reconhecimento em Tempo Real -->
-        <div class="lg:col-span-7 space-y-4">
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm">
-                
-                <div class="flex items-center justify-between mb-3.5">
-                    <div class="flex items-center gap-2">
-                        <span class="relative flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                        </span>
-                        <h2 class="font-semibold text-slate-800 text-sm">Dispositivo Óptico de Reconhecimento</h2>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span id="camera-badge" class="text-[11px] font-medium px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
-                            Streaming Ativo
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Feed de Vídeo -->
-                <div class="relative bg-slate-950 rounded-xl overflow-hidden aspect-video border-2 border-slate-200 shadow-inner flex items-center justify-center">
-                    <img id="video-feed" 
-                         src="{% url 'face_detection' %}" 
-                         alt="Câmera de Reconhecimento"
-                         class="w-full h-full object-cover">
-
-                    <!-- Marcador visual de enquadramento -->
-                    <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                        <div class="w-44 h-56 border border-dashed border-white/40 rounded-2xl flex flex-col justify-between p-2">
-                            <span class="text-[10px] text-white/50 text-center font-mono uppercase tracking-widest">Alinhar Face</span>
-                            <span class="text-[9px] text-white/40 text-center font-mono">BioPonto</span>
-                        </div>
-                    </div>
-
-                    <!-- Overlay de Sucesso ao Registrar Ponto -->
-                    <div id="video-success-overlay" class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm hidden flex flex-col items-center justify-center text-white p-6 text-center">
-                        <div class="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mb-3">
-                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </div>
-                        <h3 id="overlay-msg-titulo" class="text-lg font-bold">Ponto Registrado com Sucesso</h3>
-                        <p id="overlay-msg-desc" class="text-xs text-slate-300 mt-1 max-w-xs">Desligando câmera e carregando seu espelho de frequência dos últimos 30 dias...</p>
-                    </div>
-
-                </div>
-
-                <div class="flex items-center justify-between mt-3 text-xs text-slate-500">
-                    <span class="flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        Mantenha o rosto centralizado e evite reflexos ou óculos escuros.
-                    </span>
-                    <button type="button" onclick="fecharCameraManual()" class="text-slate-400 hover:text-slate-600 underline text-[11px]">
-                        Liberar Câmera
-                    </button>
-                </div>
-
-            </div>
+        <!-- Coluna Esquerda: Câmera com Reconhecimento em Tempo Real Reutilizável -->
+        <div class="lg:col-span-7">
+            {% include "components/camera_hud.html" with stream_url="/face_detection/" titulo="Dispositivo Óptico de Reconhecimento" %}
         </div>
 
         <!-- Coluna Direita: Painel de Identificação & Ações -->
         <div class="lg:col-span-5 space-y-6">
 
-            <!-- Card de Identificação -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
+            <!-- Card de Identificação Biométrica -->
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-5">
                 
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M7 3H5a2 2 0 0 0-2 2v2"></path>
+                            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
                         Identificação Biométrica
                     </h3>
-                    <span id="badge-tipo-indicador" class="text-[11px] font-semibold px-2 py-0.5 rounded {% if tipo_modo == 'SAIDA' %}bg-amber-100 text-amber-800{% else %}bg-emerald-100 text-emerald-800{% endif %}">
-                        Registrando {{ tipo_modo|title }}
-                    </span>
+                    <span class="text-[11px] font-bold text-slate-500 font-mono">Privacidade Ativa</span>
                 </div>
 
-                <!-- Estado: Reconhecido -->
-                <div id="state-recognized" class="hidden space-y-5">
+                <!-- Estado: Reconhecido (Transição Dinâmica) -->
+                <div id="state-recognized" class="hidden space-y-5 transition duration-150">
                     
-                    <div class="flex items-center gap-4 bg-emerald-50/70 border border-emerald-200 p-4 rounded-xl">
+                    <div class="flex items-center gap-4 bg-emerald-50/80 border border-emerald-200/80 p-4 sm:p-5 rounded-2xl shadow-sm">
                         <div class="relative shrink-0">
-                            <img id="rec-foto" src="" alt="Foto" class="w-16 h-16 rounded-xl object-cover border-2 border-emerald-500 shadow-sm">
-                            <div class="absolute -bottom-1 -right-1 bg-emerald-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
+                            <img id="rec-foto" src="" alt="Foto do Colaborador" class="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-500 shadow-sm">
+                            <div class="absolute -bottom-1 -right-1 bg-emerald-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow-sm">
                                 <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Identificado com Sucesso</span>
-                            <h4 id="rec-nome" class="text-base font-bold text-slate-900 truncate">Nome do Colaborador</h4>
-                            <p id="rec-cpf" class="text-xs text-slate-500 font-mono">CPF: 000.000.000-00</p>
+                            <span class="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider">Identificado com Sucesso</span>
+                            <h4 id="rec-nome" class="text-base font-extrabold text-slate-900 truncate">Nome do Colaborador</h4>
+                            <p id="rec-cpf" class="text-xs text-slate-500 font-mono mt-0.5">CPF: 000.000.000-00</p>
                         </div>
                     </div>
 
                     <!-- Caixa de Ação e Confirmação Automática -->
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center space-y-3">
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3.5">
                         <div class="flex items-center justify-center gap-2 text-xs font-semibold text-slate-700">
-                            <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
+                            <svg class="w-4 h-4 text-blue-600 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                                <path d="M12 2a10 10 0 0 1 10 10"></path>
                             </svg>
-                            <span id="countdown-text">Confirmando automaticamente em <strong id="countdown-val">2</strong>s...</span>
+                            <span id="countdown-text">Confirmando automaticamente em <strong id="countdown-val" class="font-mono text-sm font-bold text-slate-900">2</strong>s...</span>
                         </div>
 
                         <!-- Botão Principal de Confirmação Imediata -->
                         <button type="button" 
                                 id="btn-confirmar-ponto"
                                 onclick="executarConfirmacaoPonto()"
-                                class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-white font-bold text-sm shadow-md transition {% if tipo_modo == 'SAIDA' %}bg-amber-600 hover:bg-amber-700{% else %}bg-emerald-600 hover:bg-emerald-700{% endif %}">
-                            <span id="btn-confirmar-label">Confirmar e Abrir Lista de 30 Dias</span>
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                class="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-white font-bold text-sm shadow-lg transition duration-150 active:scale-95 {% if tipo_modo == 'SAIDA' %}bg-red-600 hover:bg-red-700 shadow-red-600/25{% else %}bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/25{% endif %}">
+                            <span id="btn-confirmar-label">Confirmar e Abrir Meu Espelho de Ponto</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
                         </button>
 
                         <div class="flex items-center justify-between text-xs pt-1">
-                            <button type="button" onclick="cancelarContagem()" class="text-slate-500 hover:text-slate-800 underline">
+                            <button type="button" onclick="cancelarContagem()" class="text-slate-500 hover:text-slate-900 underline font-medium">
                                 Pausar envio automático
                             </button>
-                            <a id="link-espelho-direto" href="#" class="text-blue-600 hover:text-blue-800 font-medium">
-                                Apenas ver histórico &rarr;
+                            <a id="link-espelho-direto" href="#" class="text-blue-600 hover:text-blue-800 font-bold">
+                                Apenas ver meu histórico &rarr;
                             </a>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Estado: Não Reconhecido / Desconhecido -->
+                <!-- Estado: Não Reconhecido / Aguardando -->
                 <div id="state-unrecognized" class="space-y-4">
-                    <div class="text-center py-8 px-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl">
-                        <div class="w-14 h-14 mx-auto bg-slate-200 rounded-full flex items-center justify-center text-slate-400 mb-3">
-                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <div class="text-center py-10 px-4 bg-slate-50/80 border-2 border-dashed border-slate-200 rounded-2xl">
+                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-3 shadow-inner">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <h4 class="font-bold text-slate-700 text-sm">Aguardando Reconhecimento Facial</h4>
-                        <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                            Posicione-se em frente à câmera. Assim que sua face for identificada, o ponto de <strong class="text-slate-700">{{ tipo_modo|title }}</strong> será computado e você será direcionado para o histórico de 30 dias.
+                        <h4 class="font-bold text-slate-800 text-sm">Aguardando Reconhecimento Facial</h4>
+                        <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
+                            Posicione-se em frente à lente. O ponto de <strong class="text-slate-800">{{ tipo_modo|title }}</strong> será computado e você terá acesso restrito exclusivamente ao seu próprio espelho de ponto.
                         </p>
                     </div>
 
-                    <!-- CTA para Novo Cadastro -->
-                    <div class="bg-blue-50/70 border border-blue-200/80 rounded-xl p-4 text-center">
-                        <p class="text-xs font-semibold text-blue-900">Novo colaborador sem cadastro facial?</p>
+                    {% if is_admin %}
+                    <!-- CTA para Novo Cadastro (Apenas Gestão / Admin) -->
+                    <div class="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-4 sm:p-5 text-center">
+                        <p class="text-xs font-bold text-blue-900">Gestão: Cadastrar novo colaborador?</p>
                         <p class="text-[11px] text-blue-700 mt-0.5 mb-3">Cadastre a foto para habilitar o ponto biométrico.</p>
                         <a href="{% url 'criar_funcionario' %}"
-                           class="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition">
+                            class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -235,41 +177,43 @@ Terminal de Reconhecimento Biométrico | BioPonto
                             <span>Cadastrar Novo Funcionário</span>
                         </a>
                     </div>
+                    {% endif %}
                 </div>
 
             </div>
 
-            <!-- Últimos Registros Batidos Hoje -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <!-- Últimos Registros Batidos Hoje (Visual de Quiosque Seguro) -->
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                         <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 8v4l3 3"></path>
                             <circle cx="12" cy="12" r="9"></circle>
                         </svg>
                         <span>Registros de Hoje</span>
                     </h3>
-                    <span class="text-xs text-slate-400 font-mono">{{ pontos_hoje|length }} registro(s)</span>
+                    <span class="text-xs text-slate-500 font-mono font-semibold">{{ pontos_hoje|length }} registro(s)</span>
                 </div>
 
-                <div id="lista-pontos" class="space-y-2 max-h-56 overflow-y-auto">
+                <div id="lista-pontos" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
                     {% for p in pontos_hoje %}
-                    <div class="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 rounded-lg text-xs border border-slate-100 transition">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold {% if p.tipo == 'ENTRADA' %}bg-emerald-100 text-emerald-800 border border-emerald-200{% else %}bg-amber-100 text-amber-800 border border-amber-200{% endif %}">
-                                {{ p.tipo }}
-                            </span>
-                            <span class="font-semibold text-slate-800 truncate max-w-[130px]">{{ p.funcionario.nome }}</span>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100/80 rounded-xl text-xs border border-slate-100 transition">
+                        <div class="flex items-center gap-2.5">
+                            {% include "components/status_pill.html" with tipo=p.tipo %}
+                            <span class="font-bold text-slate-800 truncate max-w-[140px]">{% if is_admin %}{{ p.funcionario.nome }}{% else %}{{ p.funcionario.primeiro_nome }}{% endif %}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="font-mono text-slate-500 text-[11px]">{{ p.hora|time:"H:i:s" }}</span>
-                            <a href="{% url 'historico_funcionario' p.funcionario.id %}" class="text-[11px] text-blue-600 hover:text-blue-800 font-medium underline">
+                            <span class="font-mono text-slate-500 text-[11px] font-semibold">{{ p.hora|time:"H:i:s" }}</span>
+                            {% if is_admin %}
+                            <a href="{% url 'historico_funcionario' p.funcionario.id %}"
+                                class="text-[11px] text-blue-600 hover:text-blue-800 font-bold underline" title="Apenas Administradores">
                                 30d
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                     {% empty %}
-                    <p class="text-center py-4 text-xs text-slate-400">Nenhum ponto registrado hoje ainda.</p>
+                    <p class="text-center py-6 text-xs text-slate-400">Nenhum ponto registrado hoje ainda.</p>
                     {% endfor %}
                 </div>
             </div>
@@ -313,17 +257,17 @@ Terminal de Reconhecimento Biométrico | BioPonto
         const badgeIndicador = document.getElementById('badge-tipo-indicador');
 
         if (modo === 'ENTRADA') {
-            tabEntrada.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition bg-emerald-600 text-white shadow-sm";
-            tabSaida.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition text-slate-400 hover:text-white";
-            btnConfirmar.className = "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-white font-bold text-sm shadow-md transition bg-emerald-600 hover:bg-emerald-700";
-            badgeIndicador.className = "text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800";
-            badgeIndicador.textContent = "Registrando Entrada";
+            tabEntrada.className = "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 bg-emerald-600 text-white shadow-md shadow-emerald-600/30";
+            tabSaida.className = "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 text-slate-400 hover:text-white";
+            btnConfirmar.className = "w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-white font-bold text-sm shadow-lg transition duration-150 active:scale-95 bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/25";
+            badgeIndicador.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            badgeIndicador.textContent = "Modo: Registro de Entrada";
         } else {
-            tabEntrada.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition text-slate-400 hover:text-white";
-            tabSaida.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-lg transition bg-amber-600 text-white shadow-sm";
-            btnConfirmar.className = "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-white font-bold text-sm shadow-md transition bg-amber-600 hover:bg-amber-700";
-            badgeIndicador.className = "text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800";
-            badgeIndicador.textContent = "Registrando Saída";
+            tabEntrada.className = "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 text-slate-400 hover:text-white";
+            tabSaida.className = "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-150 bg-red-600 text-white shadow-md shadow-red-600/30";
+            btnConfirmar.className = "w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-white font-bold text-sm shadow-lg transition duration-150 active:scale-95 bg-red-600 hover:bg-red-700 shadow-red-600/25";
+            badgeIndicador.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-red-500/20 text-red-300 border border-red-500/30";
+            badgeIndicador.textContent = "Modo: Registro de Saída";
         }
     }
 
@@ -413,8 +357,8 @@ Terminal de Reconhecimento Biométrico | BioPonto
         const overlayTitulo = document.getElementById('overlay-msg-titulo');
         const overlayDesc = document.getElementById('overlay-msg-desc');
         if (overlay) {
-            overlayTitulo.textContent = `Ponto de ${currentModo === 'ENTRADA' ? 'Entrada' : 'Saída'} Confirmado!`;
-            overlayDesc.textContent = 'Desligando câmera e abrindo lista dos últimos 30 dias...';
+            overlayTitulo.textContent = `Ponto de ${currentModo === 'ENTRADA' ? 'Entrada ("OI")' : 'Saída ("TCHAU")'} Confirmado!`;
+            overlayDesc.textContent = 'Desligando câmera e abrindo seu espelho de frequência...';
             overlay.classList.remove('hidden');
         }
 
@@ -446,7 +390,7 @@ Terminal de Reconhecimento Biométrico | BioPonto
                         method: 'POST',
                         headers: { 'X-CSRFToken': '{{ csrf_token }}' }
                     });
-                } catch(e) {}
+                } catch (e) { }
 
                 // 3. Redireciona para a tela de histórico dos 30 dias
                 const destUrl = data.redirect_url || `/historico/${currentEmployeeId}/`;
@@ -475,11 +419,11 @@ Terminal de Reconhecimento Biométrico | BioPonto
                 method: 'POST',
                 headers: { 'X-CSRFToken': '{{ csrf_token }}' }
             });
-        } catch(e) {}
+        } catch (e) { }
         const badge = document.getElementById('camera-badge');
         if (badge) {
             badge.textContent = 'Câmera Desligada';
-            badge.className = 'text-[11px] font-medium px-2 py-0.5 bg-red-100 text-red-700 rounded';
+            badge.className = 'text-[11px] font-bold px-2 py-0.5 bg-red-100 text-red-700 rounded-lg';
         }
         showAlert('Câmera foi desligada e liberada com sucesso.', 'info');
     }
@@ -490,9 +434,9 @@ Terminal de Reconhecimento Biométrico | BioPonto
         if (type === 'error') bgBorder = 'bg-red-50 text-red-800 border-red-200';
         if (type === 'success') bgBorder = 'bg-emerald-50 text-emerald-800 border-emerald-200';
 
-        box.className = `p-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-between border shadow-sm transition-all duration-300 ${bgBorder}`;
+        box.className = `p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between border shadow-sm transition-all duration-300 ${bgBorder}`;
         box.innerHTML = `
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2.5">
                 <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="12"></line>
@@ -500,7 +444,7 @@ Terminal de Reconhecimento Biométrico | BioPonto
                 </svg>
                 <span>${msg}</span>
             </div>
-            <button onclick="this.parentElement.classList.add('hidden')" class="text-xs underline ml-4 opacity-70 hover:opacity-100">
+            <button onclick="this.parentElement.classList.add('hidden')" class="text-xs font-bold underline ml-4 opacity-70 hover:opacity-100">
                 Fechar
             </button>
         `;
