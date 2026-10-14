@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Histórico de Ponto - {{ funcionario.nome }} | BioPonto
+Espelho de Ponto — {{ funcionario.nome }} | BatePonto
 {% endblock title %}
 
 {% block content %}
@@ -9,94 +9,38 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
 
     <!-- Notificações de Redirecionamento da Câmera -->
     {% if status_acao == 'entrada_sucesso' %}
-    <div id="flash-banner" class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl shadow-sm flex items-start justify-between">
-        <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-emerald-900">Reconhecimento Facial de Entrada Concluído</h4>
-                <p class="text-xs text-emerald-700 mt-0.5">
-                    Seu ponto de <strong>Entrada</strong> foi registrado com sucesso. A câmera foi finalizada e você foi redirecionado para a consulta dos últimos 30 dias.
-                </p>
-            </div>
-        </div>
-        <button onclick="document.getElementById('flash-banner').remove()" class="text-emerald-500 hover:text-emerald-700 p-1">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-    </div>
+        {% include "components/flash_banner.html" with tipo="entrada_sucesso" titulo="Reconhecimento Facial de Entrada Concluído!" mensagem="Seu ponto de Entrada foi registrado com sucesso. A câmera foi finalizada e você está visualizando exclusivamente seu próprio espelho de frequência." %}
     {% elif status_acao == 'saida_sucesso' %}
-    <div id="flash-banner" class="bg-blue-50 border border-blue-200 p-4 rounded-xl shadow-sm flex items-start justify-between">
-        <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-blue-900">Reconhecimento Facial de Saída Concluído</h4>
-                <p class="text-xs text-blue-700 mt-0.5">
-                    Seu ponto de <strong>Saída</strong> foi registrado com sucesso. A câmera foi finalizada e seu espelho de frequência está atualizado.
-                </p>
-            </div>
-        </div>
-        <button onclick="document.getElementById('flash-banner').remove()" class="text-blue-500 hover:text-blue-700 p-1">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-    </div>
+        {% include "components/flash_banner.html" with tipo="saida_sucesso" titulo="Reconhecimento Facial de Saída Concluído!" mensagem="Seu ponto de Saída foi registrado com sucesso. A câmera foi finalizada e seu espelho de frequência individual está atualizado." %}
     {% endif %}
 
-    <!-- Card Principal de Cabeçalho do Funcionário -->
-    <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm">
+    <!-- Card Principal de Cabeçalho do Funcionário (Modo Privacidade Estrita) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            
-            <!-- Dados do Funcionário -->
-            <div class="flex items-center gap-5">
-                <div class="relative shrink-0">
-                    {% if funcionario.foto %}
-                        <img src="{{ funcionario.foto.url }}" alt="{{ funcionario.nome }}" class="w-20 h-20 rounded-2xl object-cover border-2 border-slate-200 shadow-sm">
-                    {% else %}
-                        <div class="w-20 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
-                            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                        </div>
-                    {% endif %}
-                    
-                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[10px] {% if status_hoje == 'EM_EXPEDIENTE' %}bg-emerald-500 text-white{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}bg-blue-500 text-white{% else %}bg-slate-300 text-slate-600{% endif %}">
-                        {% if status_hoje == 'EM_EXPEDIENTE' %}
-                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        {% else %}
-                        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                        {% endif %}
-                    </span>
-                </div>
 
-                <div class="space-y-1">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{{ funcionario.nome }}</h1>
-                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full {% if status_hoje == 'EM_EXPEDIENTE' %}bg-emerald-100 text-emerald-800 border border-emerald-200{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}bg-blue-100 text-blue-800 border border-blue-200{% else %}bg-slate-100 text-slate-700 border border-slate-200{% endif %}">
-                            <span class="w-1.5 h-1.5 rounded-full {% if status_hoje == 'EM_EXPEDIENTE' %}bg-emerald-600{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}bg-blue-600{% else %}bg-slate-400{% endif %}"></span>
-                            {{ status_label }}
-                        </span>
+            <!-- Dados do Funcionário & Avatar com Halo -->
+            <div class="flex items-center gap-5 sm:gap-6">
+                {% include "components/avatar_badge.html" with funcionario=funcionario status_hoje=status_hoje tamanho="lg" %}
+
+                <div class="space-y-1.5">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">{{ funcionario.nome }}</h1>
+                        {% include "components/status_pill.html" with status=status_hoje texto=status_label %}
                     </div>
-                    <p class="text-xs text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-1">
-                        <span><strong class="font-medium text-slate-700">CPF:</strong> {{ funcionario.cpf }}</span>
-                        <span><strong class="font-medium text-slate-700">Matrícula:</strong> #{{ funcionario.id }}</span>
-                        <span><strong class="font-medium text-slate-700">Status Hoje:</strong> {{ status_desc }}</span>
+                    <p class="text-xs text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-1 font-medium">
+                        <span><strong class="font-bold text-slate-700">CPF:</strong> <span class="font-mono text-slate-600">{{ funcionario.cpf }}</span></span>
+                        <span><strong class="font-bold text-slate-700">Matrícula:</strong> <span class="font-mono text-slate-600">#{{ funcionario.id }}</span></span>
+                        <span><strong class="font-bold text-slate-700">Hoje:</strong> {{ status_desc }}</span>
                     </p>
                 </div>
             </div>
 
-            <!-- Botão de Ação: Registrar Saída ou Nova Entrada -->
-            <div class="flex flex-wrap items-center gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+            <!-- Botão de Ação: Registrar Saída ou Retornar ao Terminal -->
+            <div class="flex flex-wrap items-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
                 <a href="{% url 'home' %}?tipo=SAIDA&funcionario_id={{ funcionario.id }}" 
                    id="btn-registrar-saida"
-                   class="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white font-semibold text-sm shadow-md hover:shadow-lg transition">
-                    <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   class="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-sm shadow-md shadow-red-600/20 transition duration-150">
+                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -104,77 +48,36 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
                     <span>Fazer Reconhecimento de Saída</span>
                 </a>
 
-                <a href="{% url 'home' %}?tipo=ENTRADA" 
-                   class="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm border border-slate-200 shadow-sm transition">
-                    <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <a href="{% url 'home' %}?tipo=ENTRADA"
+                   class="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm border border-slate-200 shadow-sm transition">
+                    <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                         <polyline points="10 17 15 12 10 7"></polyline>
                         <line x1="15" y1="12" x2="3" y2="12"></line>
                     </svg>
-                    <span>Terminal / Entrada</span>
+                    <span>Terminal Biométrico</span>
                 </a>
             </div>
 
         </div>
     </div>
 
-    <!-- Indicadores dos Últimos 30 Dias -->
+    <!-- Indicadores dos Últimos 30 Dias (Componentes Reutilizáveis) -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Período</span>
-                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                </div>
-            </div>
-            <div class="text-xl font-bold text-slate-900 mt-2">Últimos 30 dias</div>
-            <p class="text-[11px] text-slate-400 mt-0.5">{{ data_limite|date:"d/m/Y" }} a {{ hoje|date:"d/m/Y" }}</p>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Entradas</span>
-                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                </div>
-            </div>
-            <div class="text-2xl font-bold text-slate-900 mt-2">{{ total_entradas }}</div>
-            <p class="text-[11px] text-emerald-600 font-medium mt-0.5">Registros de entrada</p>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Saídas</span>
-                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                </div>
-            </div>
-            <div class="text-2xl font-bold text-slate-900 mt-2">{{ total_saidas }}</div>
-            <p class="text-[11px] text-amber-600 font-medium mt-0.5">Registros de saída</p>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dias Ativos</span>
-                <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </div>
-            </div>
-            <div class="text-2xl font-bold text-slate-900 mt-2">{{ dias_trabalhados }} <span class="text-xs font-normal text-slate-400">dias</span></div>
-            <p class="text-[11px] text-slate-400 mt-0.5">Com presença confirmada</p>
-        </div>
-
+        {% include "components/metric_card.html" with titulo="Período" valor="30 dias" subtitulo="Consulta consolidada" icone="dias" cor="blue" %}
+        {% include "components/metric_card.html" with titulo="Entradas" valor=total_entradas subtitulo="Batidas de entrada" icone="entradas" cor="emerald" %}
+        {% include "components/metric_card.html" with titulo="Saídas" valor=total_saidas subtitulo="Batidas de saída" icone="saidas" cor="coral" %}
+        {% include "components/metric_card.html" with titulo="Dias Ativos" valor=dias_trabalhados subtitulo="Com presença confirmada" icone="dias" cor="purple" %}
     </div>
 
     <!-- Seção de Registros com Filtros -->
-    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-        
+    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
+
         <!-- Header da Tabela com Filtros -->
         <div class="p-5 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2 tracking-tight">
+                    <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                         <line x1="8" y1="6" x2="21" y2="6"></line>
                         <line x1="8" y1="12" x2="21" y2="12"></line>
                         <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -182,20 +85,26 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
                         <line x1="3" y1="12" x2="3.01" y2="12"></line>
                         <line x1="3" y1="18" x2="3.01" y2="18"></line>
                     </svg>
-                    <span>Espelho de Entradas e Saídas</span>
+                    <span>Espelho Individual de Entradas e Saídas</span>
                 </h3>
-                <p class="text-xs text-slate-500 mt-0.5">Lista cronológica dos pontos batidos nos últimos 30 dias</p>
+                <p class="text-xs text-slate-500 mt-0.5 font-medium">Lista cronológica dos seus pontos batidos nos últimos 30 dias</p>
             </div>
 
-            <!-- Filtros de Tipo -->
-            <div class="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-medium text-slate-600">
-                <a href="?tipo=TODOS" class="px-3 py-1.5 rounded-lg transition {% if filtro_tipo == 'TODOS' %}bg-white text-slate-900 font-semibold shadow-sm{% else %}hover:text-slate-900{% endif %}">
+            <!-- Filtros de Tipo com Seletores Mapeados -->
+            <div class="inline-flex p-1.5 bg-slate-100 rounded-2xl text-xs font-bold text-slate-600">
+                <a href="?tipo=TODOS" 
+                   id="filtro-tipo-todos"
+                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'TODOS' %}bg-white text-slate-900 shadow-sm{% else %}hover:text-slate-900{% endif %}">
                     Todos ({{ total_registros }})
                 </a>
-                <a href="?tipo=ENTRADA" class="px-3 py-1.5 rounded-lg transition {% if filtro_tipo == 'ENTRADA' %}bg-white text-emerald-800 font-semibold shadow-sm{% else %}hover:text-slate-900{% endif %}">
+                <a href="?tipo=ENTRADA" 
+                   id="filtro-tipo-entrada"
+                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'ENTRADA' %}bg-white text-emerald-800 shadow-sm{% else %}hover:text-slate-900{% endif %}">
                     Entradas ({{ total_entradas }})
                 </a>
-                <a href="?tipo=SAIDA" class="px-3 py-1.5 rounded-lg transition {% if filtro_tipo == 'SAIDA' %}bg-white text-amber-800 font-semibold shadow-sm{% else %}hover:text-slate-900{% endif %}">
+                <a href="?tipo=SAIDA" 
+                   id="filtro-tipo-saida"
+                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'SAIDA' %}bg-white text-red-800 shadow-sm{% else %}hover:text-slate-900{% endif %}">
                     Saídas ({{ total_saidas }})
                 </a>
             </div>
@@ -204,70 +113,58 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
         <!-- Tabela / Lista de Pontos -->
         {% if pontos %}
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table id="tabela-pontos-colaborador" class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-50/80 text-[11px] font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                        <th class="py-3 px-5">Data</th>
-                        <th class="py-3 px-5">Tipo</th>
-                        <th class="py-3 px-5">Horário</th>
-                        <th class="py-3 px-5">Método de Validação</th>
-                        <th class="py-3 px-5 text-right">Comprovante / Foto</th>
+                    <tr class="bg-slate-50/80 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <th class="py-3.5 px-6">Data</th>
+                        <th class="py-3.5 px-6">Tipo</th>
+                        <th class="py-3.5 px-6">Horário</th>
+                        <th class="py-3.5 px-6">Método de Validação</th>
+                        <th class="py-3.5 px-6 text-right">Comprovante / Foto</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-sm">
                     {% for p in pontos %}
-                    <tr class="hover:bg-slate-50/60 transition group">
-                        
+                    <tr class="hover:bg-slate-50/80 transition duration-100 group">
+
                         <!-- Data -->
-                        <td class="py-4 px-5">
-                            <div class="font-medium text-slate-900">{{ p.data|date:"d/m/Y" }}</div>
-                            <div class="text-xs text-slate-400 capitalize">{{ p.data|date:"l" }}</div>
+                        <td class="py-4 px-6">
+                            <div class="font-bold text-slate-900">{{ p.data|date:"d/m/Y" }}</div>
+                            <div class="text-[11px] text-slate-400 capitalize font-medium">{{ p.data|date:"l" }}</div>
                         </td>
 
-                        <!-- Tipo (Entrada ou Saída) -->
-                        <td class="py-4 px-5">
-                            {% if p.tipo == 'ENTRADA' %}
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                                    <polyline points="10 17 15 12 10 7"></polyline>
-                                    <line x1="15" y1="12" x2="3" y2="12"></line>
-                                </svg>
-                                Entrada
-                            </span>
-                            {% else %}
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                                <svg class="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                    <polyline points="16 17 21 12 16 7"></polyline>
-                                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                                </svg>
-                                Saída
-                            </span>
-                            {% endif %}
+                        <!-- Tipo com Componente de Pílula -->
+                        <td class="py-4 px-6">
+                            {% include "components/status_pill.html" with tipo=p.tipo %}
                         </td>
 
                         <!-- Horário -->
-                        <td class="py-4 px-5">
-                            <span class="font-mono font-semibold text-slate-800 text-sm">{{ p.hora|time:"H:i:s" }}</span>
+                        <td class="py-4 px-6">
+                            <span class="font-mono font-bold text-slate-800 text-sm tracking-wide">{{ p.hora|time:"H:i:s" }}</span>
                         </td>
 
                         <!-- Método de Validação -->
-                        <td class="py-4 px-5">
-                            <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-                                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2 text-xs text-slate-600 font-semibold">
+                                <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    <polyline points="9 12 11 14 15 10"></polyline>
                                 </svg>
                                 <span>Biometria Facial Autenticada</span>
                             </div>
                         </td>
 
-                        <!-- Comprovante / Foto Snapshot -->
-                        <td class="py-4 px-5 text-right">
+                        <!-- Comprovante / Foto Snapshot (Abre Modal Global) -->
+                        <td class="py-4 px-6 text-right">
                             {% if p.foto_registro %}
-                            <button onclick="abrirFotoModal('{{ p.foto_registro.url }}', '{{ p.funcionario.nome }}', '{{ p.tipo }}', '{{ p.data|date:"d/m/Y" }} {{ p.hora|time:"H:i:s" }}')" 
-                                    class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition">
-                                <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <button type="button"
+                                    data-modal-foto-trigger
+                                    data-foto-url="{{ p.foto_registro.url }}"
+                                    data-funcionario-nome="{{ p.funcionario.nome }}"
+                                    data-tipo="{{ p.tipo }}"
+                                    data-horario="{{ p.data|date:'d/m/Y' }} {{ p.hora|time:'H:i:s' }}"
+                                    class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition shadow-sm">
+                                <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                     <polyline points="21 15 16 10 5 21"></polyline>
@@ -275,7 +172,7 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
                                 <span>Ver Foto</span>
                             </button>
                             {% else %}
-                            <span class="text-xs text-slate-400">Sem captura</span>
+                            <span class="text-xs text-slate-400 font-medium">Sem captura</span>
                             {% endif %}
                         </td>
 
@@ -286,22 +183,23 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
         </div>
         {% else %}
         <!-- Estado Vazio -->
-        <div class="py-12 px-4 text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <div class="py-16 px-4 text-center">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 shadow-inner">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
             </div>
-            <h4 class="text-sm font-semibold text-slate-700">Nenhum registro encontrado</h4>
-            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                Não constam registros de {{ filtro_tipo|lower }} para este funcionário nos últimos 30 dias.
+            <h4 class="text-base font-bold text-slate-800">Nenhum registro encontrado</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                Não constam registros de {{ filtro_tipo|lower }} para este colaborador nos últimos 30 dias.
             </p>
-            <div class="mt-4">
-                <a href="{% url 'home' %}?tipo=ENTRADA" class="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition">
-                    Ir para Câmera / Registrar Ponto
+            <div class="mt-5">
+                <a href="{% url 'home' %}?tipo=ENTRADA"
+                   class="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm">
+                    Ir para o Terminal / Registrar Ponto
                 </a>
             </div>
         </div>
@@ -309,16 +207,20 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
 
     </div>
 
-    <!-- Alternar Funcionário (se houver outros no sistema) -->
-    {% if outros_funcionarios %}
-    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <!-- Alternar Funcionário (ESTRITAMENTE EXCLUSIVO PARA ADMINISTRADORES) -->
+    {% if outros_funcionarios and is_admin %}
+    <div id="seletor-outros-funcionarios"
+        class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h4 class="text-sm font-semibold text-slate-800">Consultar Outro Funcionário</h4>
-            <p class="text-xs text-slate-500">Selecione outro colaborador cadastrado para visualizar o histórico de frequência</p>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 uppercase tracking-wider">Modo Gestão / Admin</span>
+                <h4 class="text-sm font-bold text-slate-900">Consultar Outro Funcionário</h4>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5 font-medium">Selecione outro colaborador cadastrado para visualizar o histórico de frequência</p>
         </div>
         <div class="flex items-center gap-2">
-            <select onchange="if(this.value) window.location.href='/historico/' + this.value + '/';" 
-                    class="text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select onchange="if(this.value) window.location.href='/historico/' + this.value + '/';"
+                class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Selecione um funcionário...</option>
                 {% for out in outros_funcionarios %}
                 <option value="{{ out.id }}">{{ out.nome }} ({{ out.cpf }})</option>
@@ -329,48 +231,4 @@ Histórico de Ponto - {{ funcionario.nome }} | BioPonto
     {% endif %}
 
 </div>
-
-<!-- Modal para Exibir Snapshot da Câmera -->
-<div id="foto-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in duration-200">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-            <div>
-                <h4 id="modal-titulo" class="text-sm font-bold text-slate-900">Registro Fotográfico</h4>
-                <p id="modal-subtitulo" class="text-xs text-slate-500">Comprovante biométrico capturado pela câmera</p>
-            </div>
-            <button onclick="fecharFotoModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        </div>
-        <div class="p-4 bg-slate-950 flex items-center justify-center min-h-[260px]">
-            <img id="modal-img" src="" alt="Snapshot" class="max-h-80 w-auto object-contain rounded-lg shadow">
-        </div>
-        <div class="p-3 bg-slate-50 border-t border-slate-100 text-center">
-            <button onclick="fecharFotoModal()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
-                Fechar Visualização
-            </button>
-        </div>
-    </div>
-</div>
 {% endblock content %}
-
-{% block scripts %}
-<script>
-    function abrirFotoModal(url, nome, tipo, dataHora) {
-        document.getElementById('modal-img').src = url;
-        document.getElementById('modal-titulo').textContent = `${nome} - ${tipo}`;
-        document.getElementById('modal-subtitulo').textContent = `Capturado em: ${dataHora}`;
-        document.getElementById('foto-modal').classList.remove('hidden');
-    }
-
-    function fecharFotoModal() {
-        document.getElementById('foto-modal').classList.add('hidden');
-        document.getElementById('modal-img').src = '';
-    }
-
-    // Fechar ao teclar Esc
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') fecharFotoModal();
-    });
-</script>
-{% endblock scripts %}
