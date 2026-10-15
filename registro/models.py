@@ -13,6 +13,10 @@ class Funcionario(models.Model):
     def __str__(self):
         return self.nome
 
+    @property
+    def primeiro_nome(self):
+        return self.nome.split()[0] if self.nome else ''
+
     def save(self, *args, **kwargs):
         if not self.slug:
             seq = self.nome + '_FUNC' + str(randint(1000000, 9999999))

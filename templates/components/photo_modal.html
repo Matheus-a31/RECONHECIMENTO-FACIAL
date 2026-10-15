@@ -1,0 +1,96 @@
+<div id="modal-foto-ponto"
+    class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition duration-150">
+    <div
+        class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col transform transition-all">
+
+        <!-- Modal Header -->
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h4 id="modal-titulo" class="text-sm font-bold text-slate-900 tracking-tight">Registro Fotográfico
+                    </h4>
+                    <p id="modal-subtitulo" class="text-[11px] text-slate-500 font-medium">Comprovante de auditoria
+                        biométrica instantânea</p>
+                </div>
+            </div>
+            <button id="modal-foto-fechar" type="button" onclick="fecharFotoModal()"
+                class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Foto Frame -->
+        <div class="p-5 bg-slate-950 flex items-center justify-center min-h-[300px]">
+            <img id="modal-foto-img" src="" alt="Comprovante Snapshot"
+                class="max-h-96 w-auto object-contain rounded-2xl shadow-xl border border-white/10">
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-500 flex items-center gap-1.5 font-medium">
+                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Biometria facial autenticada com carimbo de data/hora
+            </span>
+            <button type="button" onclick="fecharFotoModal()"
+                class="text-xs font-bold px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition shadow-sm">
+                Fechar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function abrirFotoModal(url, nome, tipo, horario) {
+        const modal = document.getElementById('modal-foto-ponto') || document.getElementById('foto-modal');
+        const img = document.getElementById('modal-foto-img') || document.getElementById('modal-img');
+        const titulo = document.getElementById('modal-titulo');
+        const subtitulo = document.getElementById('modal-subtitulo');
+
+        if (img) img.src = url || '';
+        if (titulo) titulo.textContent = `${nome || 'Colaborador'} — ${tipo || 'Registro'}`;
+        if (subtitulo) subtitulo.textContent = horario ? `Capturado em: ${horario}` : 'Comprovante biométrico';
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function fecharFotoModal() {
+        const modal = document.getElementById('modal-foto-ponto') || document.getElementById('foto-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    document.addEventListener('click', function (e) {
+        const trigger = e.target.closest('[data-modal-foto-trigger]');
+        if (trigger) {
+            e.preventDefault();
+            abrirFotoModal(
+                trigger.getAttribute('data-foto-url'),
+                trigger.getAttribute('data-funcionario-nome'),
+                trigger.getAttribute('data-tipo'),
+                trigger.getAttribute('data-horario')
+            );
+            return;
+        }
+
+        const modal = document.getElementById('modal-foto-ponto');
+        if (modal && e.target === modal) {
+            fecharFotoModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') fecharFotoModal();
+    });
+</script>

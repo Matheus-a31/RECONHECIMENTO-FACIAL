@@ -1,61 +1,71 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Coleta de Faces - {{ funcionario.nome }} | BioPonto
+Amostragem Facial — {{ funcionario.nome }} | BatePonto
 {% endblock title %}
-
-{% block header_text %}
-Coleta de Faces para {{ funcionario.nome }}
-{% endblock header_text %}
 
 {% block content %}
 <div class="max-w-xl mx-auto space-y-6">
 
-    <div class="bg-white p-7 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm">
+    <!-- Progress Indicator (Etapa 2 de 2) -->
+    <div class="flex items-center justify-between px-2">
+        <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-emerald-500/20">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Etapa 1 Concluída</span>
+                <h4 class="text-xs font-bold text-slate-800">Dados do Colaborador</h4>
+            </div>
+        </div>
+        <div class="w-12 h-0.5 bg-blue-600"></div>
+        <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/20">2</span>
+            <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Etapa 2 de 2</span>
+                <h4 class="text-xs font-bold text-slate-800">Amostragem Facial</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Coleta -->
+    <div class="bg-white p-7 sm:p-9 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
         
         <div class="flex items-center gap-4 pb-6 border-b border-slate-100">
-            {% if funcionario.foto %}
-                <img src="{{ funcionario.foto.url }}" 
-                     alt="Foto de {{ funcionario.nome }}" 
-                     class="w-16 h-16 object-cover rounded-xl border border-slate-200 shadow-sm shrink-0">
-            {% else %}
-                <div class="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center text-xs text-slate-400 shrink-0">
-                    Sem Foto
-                </div>
-            {% endif %}
+            {% include "components/avatar_badge.html" with funcionario=funcionario tamanho="md" mostrar_halo=False %}
 
             <div class="min-w-0 flex-1">
-                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Etapa 2 de 2 &bull; Amostragem Facial</span>
-                <h1 class="text-lg font-bold text-slate-900 truncate">{{ funcionario.nome }}</h1>
-                <p class="text-xs text-slate-500 font-mono">CPF: {{ funcionario.cpf }} &bull; ID: #{{ funcionario.id }}</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider">Amostragem Facial Bioponto</span>
+                <h1 class="text-lg font-extrabold text-slate-900 truncate">{{ funcionario.nome }}</h1>
+                <p class="text-xs text-slate-500 font-mono mt-0.5">CPF: {{ funcionario.cpf }} &bull; ID: #{{ funcionario.id }}</p>
             </div>
         </div>
 
-        <div class="space-y-5 mt-6">
-            <p class="text-xs text-slate-600 text-center">
-                Centralize o rosto na câmera para que o algoritmo capture e incorpore os ângulos ao classificador LBPH.
-            </p>
-
-            <div class="relative bg-slate-950 rounded-xl overflow-hidden aspect-video border-2 border-slate-200 shadow-inner flex items-center justify-center">
-                <img src="{% url 'url_face_detection' %}" 
-                     alt="Câmera de Coleta de Faces" 
-                     class="w-full h-full object-cover">
+        <div class="space-y-5">
+            <div class="text-center space-y-1">
+                <h3 class="text-sm font-bold text-slate-800">Alinhe o rosto no centro do quadro óptico</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                    Mantenha o olhar fixo na câmera para captura de amostras que serão incorporadas ao classificador LBPH.
+                </p>
             </div>
 
-            <form method="post" class="space-y-4">
+            <!-- Moldura de Câmera Reutilizável com Visor Oval Estilo Waapi/Senior Sistemas -->
+            {% include "components/camera_hud.html" with stream_url="/face_detection/" titulo="Amostragem Biométrica Facial" reticle_type="oval" camera_badge_label="Captura Pronta" mostrar_overlay=False mostrar_rodape=False %}
+
+            <form method="post" class="space-y-3 pt-2">
                 {% csrf_token %}
                 <button type="submit" 
-                        class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition duration-150">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-blue-600/25 transition duration-150">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-                    <span>Concluir Coleta e Treinar Modelo</span>
+                    <span>Concluir Coleta e Treinar Modelo LBPH</span>
                 </button>
             </form>
 
-            <div class="text-center pt-2">
-                <a href="{% url 'criar_funcionario' %}" class="text-xs font-medium text-slate-500 hover:text-slate-800 transition underline">
-                    Voltar para o Cadastro de Funcionário
+            <div class="text-center pt-1">
+                <a href="{% url 'criar_funcionario' %}" class="text-xs font-bold text-slate-400 hover:text-slate-700 transition">
+                    &larr; Voltar para Dados Cadastrais
                 </a>
             </div>
         </div>

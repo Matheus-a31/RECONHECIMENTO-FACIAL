@@ -1,0 +1,79 @@
+<header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/95">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+        <!-- Logo & Identidade Visual BatePonto -->
+        <a href="{% url 'home' %}" class="flex items-center gap-3 group transition">
+            <div
+                class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:bg-blue-700 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 3H5a2 2 0 0 0-2 2v2"></path>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                    <path d="M3 17v2a2 2 0 0 0 2 2h2"></path>
+                    <path d="M9 9h.01"></path>
+                    <path d="M15 9h.01"></path>
+                    <path d="M10 13c.5.5 1.5.5 2 0"></path>
+                    <path d="M12 11v2"></path>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span
+                    class="text-base font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition flex items-center gap-1.5">
+                    BatePonto
+                    <span
+                        class="text-[10px] font-semibold tracking-wider uppercase text-blue-700 bg-blue-50 border border-blue-200/60 rounded px-1.5 py-0.5">Biometria</span>
+                </span>
+                <span class="text-[11px] text-slate-400 font-medium">Controle de Frequência Inteligente</span>
+            </div>
+        </a>
+
+        <!-- Links de Navegação com Isolamento por Perfil -->
+        <nav class="flex items-center gap-1.5 sm:gap-2">
+            <a href="{% url 'home' %}" id="nav-terminal"
+                class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition">
+                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Terminal</span>
+            </a>
+
+            <!-- Acesso Exclusivo a Administradores e Gestores -->
+            {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'historico_geral' %}" id="nav-historico-geral"
+                class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition">
+                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 8v4l3 3"></path>
+                    <circle cx="12" cy="12" r="9"></circle>
+                </svg>
+                <span>Histórico Geral (Admin)</span>
+            </a>
+
+            <a href="{% url 'criar_funcionario' %}" id="nav-cadastrar-funcionario"
+                class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60 transition shadow-sm">
+                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <line x1="19" y1="8" x2="19" y2="14"></line>
+                    <line x1="22" y1="11" x2="16" y2="11"></line>
+                </svg>
+                <span>Cadastrar Funcionário</span>
+            </a>
+            {% endif %}
+
+            <a href="/admin/" target="_blank" id="nav-admin"
+                class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium px-2.5 py-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition">
+                <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="hidden md:inline">Admin</span>
+            </a>
+        </nav>
+    </div>
+</header>
