@@ -1,11 +1,11 @@
 <div class="relative shrink-0 inline-block">
     {% if funcionario.foto %}
     <img src="{{ funcionario.foto.url }}" alt="{{ funcionario.nome }}"
-        class="{% if tamanho == 'sm' %}w-10 h-10 rounded-xl{% elif tamanho == 'lg' %}w-20 h-20 rounded-2xl{% elif tamanho == 'xl' %}w-28 h-28 rounded-2xl{% else %}w-16 h-16 rounded-2xl{% endif %} object-cover border-2 border-white shadow-sm ring-2 {% if status_hoje == 'EM_EXPEDIENTE' %}ring-emerald-500{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}ring-blue-500{% else %}ring-slate-200{% endif %}">
+        class="{% if tamanho == 'sm' %}w-10 h-10{% elif tamanho == 'lg' %}w-20 h-20{% elif tamanho == 'xl' %}w-28 h-28{% else %}w-14 h-14{% endif %} rounded-full object-cover border-2 border-white ring-2 {% if status_hoje == 'EM_EXPEDIENTE' %}ring-emerald-500{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}ring-slate-300{% else %}ring-slate-200{% endif %}">
     {% else %}
     <div
-        class="{% if tamanho == 'sm' %}w-10 h-10 rounded-xl{% elif tamanho == 'lg' %}w-20 h-20 rounded-2xl{% elif tamanho == 'xl' %}w-28 h-28 rounded-2xl{% else %}w-16 h-16 rounded-2xl{% endif %} bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
-        <svg class="{% if tamanho == 'sm' %}w-5 h-5{% elif tamanho == 'lg' %}w-10 h-10{% elif tamanho == 'xl' %}w-12 h-12{% else %}w-8 h-8{% endif %}"
+        class="{% if tamanho == 'sm' %}w-10 h-10{% elif tamanho == 'lg' %}w-20 h-20{% elif tamanho == 'xl' %}w-28 h-28{% else %}w-14 h-14{% endif %} rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+        <svg class="{% if tamanho == 'sm' %}w-5 h-5{% elif tamanho == 'lg' %}w-10 h-10{% elif tamanho == 'xl' %}w-12 h-12{% else %}w-7 h-7{% endif %}"
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
@@ -15,7 +15,7 @@
 
     {% if mostrar_halo|default_if_none:True %}
     <span
-        class="absolute -bottom-1 -right-1 {% if tamanho == 'sm' %}w-3.5 h-3.5 text-[8px]{% else %}w-5 h-5 text-[10px]{% endif %} rounded-full border-2 border-white flex items-center justify-center shadow-sm {% if status_hoje == 'EM_EXPEDIENTE' %}bg-emerald-500 text-white{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}bg-blue-500 text-white{% else %}bg-slate-300 text-slate-600{% endif %}">
+        class="absolute bottom-0 right-0 {% if tamanho == 'sm' %}w-3.5 h-3.5 text-[8px]{% else %}w-5 h-5 text-[10px]{% endif %} rounded-full border-2 border-white flex items-center justify-center {% if status_hoje == 'EM_EXPEDIENTE' %}bg-emerald-500 text-white{% elif status_hoje == 'EXPEDIENTE_ENCERRADO' %}bg-slate-400 text-white{% else %}bg-slate-300 text-slate-600{% endif %}">
         {% if status_hoje == 'EM_EXPEDIENTE' %}
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <polyline points="20 6 9 17 4 12"></polyline>

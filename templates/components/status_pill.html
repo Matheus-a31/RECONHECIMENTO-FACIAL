@@ -1,37 +1,25 @@
 {% if tipo == 'ENTRADA' %}
-<span
-    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200/90 shadow-sm">
-    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-    <span>{{ texto|default:"ENTRADA" }}</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+    {{ texto|default:"Entrada" }}
 </span>
 {% elif tipo == 'SAIDA' %}
-<span
-    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-800 border border-red-200/90 shadow-sm">
-    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-    <span>{{ texto|default:"SAÍDA" }}</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+    {{ texto|default:"Saída" }}
 </span>
 {% elif status == 'EM_EXPEDIENTE' %}
-<span
-    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
-    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-    <span>{{ texto|default:"Em Expediente" }}</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+    {{ texto|default:"Trabalhando" }}
 </span>
 {% elif status == 'EXPEDIENTE_ENCERRADO' %}
-<span
-    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
-    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-    <span>{{ texto|default:"Expediente Encerrado" }}</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+    {{ texto|default:"Saiu" }}
 </span>
 {% elif status == 'ATRASO' or status == 'FALTA' %}
-<span
-    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-800 border border-red-200 shadow-sm">
-    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-    <span>{{ texto|default:"Atraso" }}</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+    {{ texto|default:"Atraso" }}
 </span>
 {% else %}
-<span
-    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 shadow-sm">
-    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-    <span>{{ texto|default:"Sem Registro" }}</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+    {{ texto|default:"Sem registro" }}
 </span>
 {% endif %}

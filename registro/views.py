@@ -225,16 +225,16 @@ def historico_funcionario(request, funcionario_id):
     
     if ultimo_hoje and ultimo_hoje.tipo == 'ENTRADA':
         status_hoje = 'EM_EXPEDIENTE'
-        status_label = 'Em Expediente'
-        status_desc = f"Entrada registrada hoje às {ultimo_hoje.hora.strftime('%H:%M:%S')}"
+        status_label = 'Trabalhando'
+        status_desc = f"Entrada às {ultimo_hoje.hora.strftime('%H:%M')}"
     elif ultimo_hoje and ultimo_hoje.tipo == 'SAIDA':
         status_hoje = 'EXPEDIENTE_ENCERRADO'
-        status_label = 'Expediente Encerrado'
-        status_desc = f"Saída registrada hoje às {ultimo_hoje.hora.strftime('%H:%M:%S')}"
+        status_label = 'Saiu'
+        status_desc = f"Saída às {ultimo_hoje.hora.strftime('%H:%M')}"
     else:
         status_hoje = 'SEM_REGISTRO'
-        status_label = 'Sem Registro Hoje'
-        status_desc = 'Nenhum ponto registrado na data de hoje'
+        status_label = 'Sem registro hoje'
+        status_desc = 'Nenhum ponto registrado hoje'
 
     # Agrupamento por dia para visualização estruturada
     dias_dict = {}
