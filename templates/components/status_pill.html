@@ -2,13 +2,13 @@
 <span
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200/90 shadow-sm">
     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-    <span>{{ texto|default:"ENTRADA (OI)" }}</span>
+    <span>{{ texto|default:"ENTRADA" }}</span>
 </span>
 {% elif tipo == 'SAIDA' %}
 <span
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-800 border border-red-200/90 shadow-sm">
     <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-    <span>{{ texto|default:"SAÍDA (TCHAU)" }}</span>
+    <span>{{ texto|default:"SAÍDA" }}</span>
 </span>
 {% elif status == 'EM_EXPEDIENTE' %}
 <span
