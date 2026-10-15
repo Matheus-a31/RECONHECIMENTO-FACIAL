@@ -155,6 +155,7 @@ class videoCamera(object):
         success, image = self.video.read()
         if not success:
             return None
+        self.last_frame = image.copy()
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
@@ -167,15 +168,16 @@ class videoCamera(object):
         if not success:
             return None, []
 
+        self.last_frame = image.copy()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces_rects = self.face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5, minSize=(70, 70))
+        faces_rects = self.face_cascade.detectMultiScale(gray, scaleFactor=1.15, minNeighbors=4, minSize=(60, 60))
         pessoas_detectadas = []
 
-        # LIMIAR ESTRITO PARA LBPH:
+        # LIMIAR PARA LBPH:
         # Menor valor de confidence indica maior proximidade (distancia chi-quadrado).
-        # - Distancia <= 50.0: Alta correspondencia (pessoa correta)
-        # - Distancia > 50.0: Desconhecido (evita falsos positivos com barba/cabelo parecidos)
-        LIMIAR_RIGIDO = 50.0
+        # - Distancia <= 68.0: Correspondencia valida para webcam ao vivo
+        # - Distancia > 68.0: Desconhecido (evita falsos positivos com terceiros)
+        LIMIAR_RIGIDO = 68.0
 
         for (x, y, w, h) in faces_rects:
             face_roi = cv2.resize(gray[y:y+h, x:x+w], (200, 200))
@@ -194,7 +196,7 @@ class videoCamera(object):
                     cor = (0, 255, 0) # Verde se realmente for o funcionario
                     
                     # Converte a distancia em uma porcentagem estimada de confianca
-                    similaridade_pct = max(0, min(100, int(100 - (confidence / LIMIAR_RIGIDO) * 30)))
+                    similaridade_pct = max(0, min(100, int(100 - (confidence / LIMIAR_RIGIDO) * 40)))
                     
                     pessoas_detectadas.append({
                         'funcionario_id': info['id'],
@@ -226,11 +228,18 @@ class videoCamera(object):
         return jpeg.tobytes(), pessoas_detectadas
 
     def capture_snapshot(self):
-        """Captura um snapshot JPEG no momento exato."""
-        if self.video is None or not self.video.isOpened():
+        """Captura um snapshot JPEG no momento exato com fallback para o último frame."""
+        image = None
+        if self.video is not None and self.video.isOpened():
+            success, frame = self.video.read()
+            if success:
+                image = frame
+
+        if image is None and hasattr(self, 'last_frame') and self.last_frame is not None:
+            image = self.last_frame
+
+        if image is None:
             return None
-        success, image = self.video.read()
-        if not success:
-            return None
+
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
