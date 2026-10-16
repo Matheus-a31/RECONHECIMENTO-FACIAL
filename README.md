@@ -1,10 +1,11 @@
 ﻿#  Sistema de Reconhecimento Facial Inteligente
 
 ![Python](https://img.shields.io/badge/Python-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Django](https://img.shields.io/badge/Django-107C41?style=for-the-badge&logo=java&logoColor=white)
+![Django](https://img.shields.io/badge/Django-107C41?style=for-the-badge&logo=Django&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![OpenCV](https://img.shields.io/badge/OpenCV-0078D6?style=for-the-badge&logo=OpenCV&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-107C41?style=for-the-badge&logo=Swagger&logoColor=white)
 
 **Visão Geral:** Este projeto é um sistema web robusto para cadastro, coleta de faces e reconhecimento de funcionários em tempo real. Desenvolvido com **Python** (Django) para o backend e **OpenCV** para o processamento de imagens, a interface é moderna e responsiva, utilizando **Tailwind CSS**.
 
@@ -33,6 +34,7 @@
 | **Reconhecimento** | `face_recognition` | Implementação do algoritmo de aprendizado de máquina para identificação. |
 | **Frontend/Estilo** | Tailwind CSS | Framework *utility-first* para design rápido e responsivo. |
 | **Banco de Dados** | SQLite | Armazenamento de dados de funcionários e metadados de coleta. |
+| **Documentação** | Swagger | Documentação das rotas da API na rota `/docs`|
 
 
 ## Configuração e Instalação
