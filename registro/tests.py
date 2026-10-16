@@ -261,3 +261,40 @@ class ApiBaterPontoESpoofingTests(TestCase):
         self.assertEqual(data['status'], 'RECONHECIDO')
         self.assertEqual(data['funcionario']['cpf'], '***.222.333-**')
         self.assertEqual(funcionario_autorizado_id(resp.wsgi_request), self.func_a.id)
+
+
+class SwaggerDocumentationTests(TestCase):
+    """Testes para a rota de documentação da API via Swagger /docs e schema OpenAPI."""
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_swagger_docs_url_acessivel_com_e_sem_barra(self):
+        """Verifica se /docs e /docs/ retornam 200 com Swagger UI renderizado."""
+        resp_sem_barra = self.client.get('/docs')
+        self.assertEqual(resp_sem_barra.status_code, 200)
+        self.assertIn('swagger-ui', resp_sem_barra.content.decode('utf-8'))
+        self.assertIn('/docs/schema.json', resp_sem_barra.content.decode('utf-8'))
+
+        resp_com_barra = self.client.get('/docs/')
+        self.assertEqual(resp_com_barra.status_code, 200)
+        self.assertIn('swagger-ui', resp_com_barra.content.decode('utf-8'))
+
+    def test_openapi_schema_json_completo(self):
+        """Verifica se /docs/schema.json retorna especificação OpenAPI 3.0 válida com todas as rotas."""
+        resp = self.client.get(reverse('openapi_schema'))
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data.get('openapi'), '3.0.3')
+        self.assertEqual(data.get('info', {}).get('title'), 'BatePonto API — Reconhecimento Facial & Ponto Eletrônico')
+        
+        # Verifica se todas as rotas de API esperadas estão presentes
+        paths = data.get('paths', {})
+        self.assertIn('/api/status-reconhecimento/', paths)
+        self.assertIn('/api/bater-ponto/', paths)
+        self.assertIn('/api/fechar-camera/', paths)
+        self.assertIn('/face_detection/', paths)
+        self.assertIn('/historico/{funcionario_id}/', paths)
+        self.assertIn('/historico/', paths)
+        self.assertIn('/cadastrar/', paths)
+        self.assertIn('/criar_coleta_faces/{funcionario_id}', paths)
