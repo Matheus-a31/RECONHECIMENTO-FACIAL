@@ -16,6 +16,11 @@
   * **Reconhecimento em Tempo Real:** Interface para exibir o *stream* de vídeo da câmera, detectando e identificando faces conhecidas.
   * **Tecnologia Web Moderna:** Utilização de **Django Forms** customizados e **Tailwind CSS** para uma experiência de usuário agradável.
 
+<img width="1612" height="777" alt="Screenshot 2026-10-16 at 13-45-24 Bater Ponto BatePonto" src="https://github.com/user-attachments/assets/81b124fe-c422-4953-bf4c-a0159d9dd756" />
+
+<img width="1518" height="856" alt="Screenshot 2026-10-16 at 13-44-45 legal BatePonto" src="https://github.com/user-attachments/assets/83473af8-3b58-44bf-b798-b872aac3233f" />
+
+<img width="1215" height="725" alt="Screenshot 2026-10-16 at 13-45-00 Novo Colaborador BatePonto" src="https://github.com/user-attachments/assets/eb0d0868-9f5a-44df-b447-7e254ab0c05c" />
 
 
 ## Tecnologias Utilizadas
