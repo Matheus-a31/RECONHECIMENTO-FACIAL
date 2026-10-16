@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ title|default:"BatePonto" }}{% endblock title %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +51,10 @@
     <!-- Footer -->
     <footer class="border-t border-slate-200 py-4 text-center text-xs text-slate-400">
         <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
-            <span class="font-medium text-slate-500">BatePonto</span>
+            <div class="flex items-center gap-2">
+                <img src="{% static 'img/logo.png' %}" alt="Logo BatePonto" class="w-5 h-5 rounded object-contain">
+                <span class="font-medium text-slate-500">BatePonto</span>
+            </div>
             <p>&copy; {% now "Y" %} BatePonto</p>
         </div>
     </footer>
