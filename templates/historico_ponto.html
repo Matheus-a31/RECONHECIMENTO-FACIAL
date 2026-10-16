@@ -1,161 +1,141 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Espelho de Ponto — {{ funcionario.nome }} | BatePonto
+{{ funcionario.nome }} | BatePonto
 {% endblock title %}
 
 {% block content %}
-<div class="space-y-6">
+<div class="space-y-5">
 
     <!-- Notificações de Redirecionamento da Câmera -->
     {% if status_acao == 'entrada_sucesso' %}
-        {% include "components/flash_banner.html" with tipo="entrada_sucesso" titulo="Reconhecimento Facial de Entrada Concluído!" mensagem="Seu ponto de Entrada foi registrado com sucesso. A câmera foi finalizada e você está visualizando exclusivamente seu próprio espelho de frequência." %}
+        {% include "components/flash_banner.html" with tipo="entrada_sucesso" titulo="Entrada registrada." mensagem="" %}
     {% elif status_acao == 'saida_sucesso' %}
-        {% include "components/flash_banner.html" with tipo="saida_sucesso" titulo="Reconhecimento Facial de Saída Concluído!" mensagem="Seu ponto de Saída foi registrado com sucesso. A câmera foi finalizada e seu espelho de frequência individual está atualizado." %}
+        {% include "components/flash_banner.html" with tipo="saida_sucesso" titulo="Saída registrada." mensagem="" %}
     {% endif %}
 
-    <!-- Card Principal de Cabeçalho do Funcionário (Modo Privacidade Estrita) -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+    <!-- Card de Cabeçalho do Funcionário -->
+    <div class="bg-white rounded-lg p-5 sm:p-6 border border-slate-200 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
 
-            <!-- Dados do Funcionário & Avatar com Halo -->
-            <div class="flex items-center gap-5 sm:gap-6">
+            <!-- Dados do Funcionário -->
+            <div class="flex items-center gap-4">
                 {% include "components/avatar_badge.html" with funcionario=funcionario status_hoje=status_hoje tamanho="lg" %}
 
-                <div class="space-y-1.5">
-                    <div class="flex flex-wrap items-center gap-2.5">
-                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">{{ funcionario.nome }}</h1>
+                <div class="space-y-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="text-xl font-bold text-slate-800">{{ funcionario.nome }}</h1>
                         {% include "components/status_pill.html" with status=status_hoje texto=status_label %}
                     </div>
-                    <p class="text-xs text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-1 font-medium">
-                        <span><strong class="font-bold text-slate-700">CPF:</strong> <span class="font-mono text-slate-600">{{ funcionario.cpf }}</span></span>
-                        <span><strong class="font-bold text-slate-700">Matrícula:</strong> <span class="font-mono text-slate-600">#{{ funcionario.id }}</span></span>
-                        <span><strong class="font-bold text-slate-700">Hoje:</strong> {{ status_desc }}</span>
+                    <p class="text-xs text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span>CPF: <span class="text-slate-700">{{ funcionario.cpf }}</span></span>
+                        <span>&bull;</span>
+                        <span>{{ status_desc }}</span>
                     </p>
                 </div>
             </div>
 
-            <!-- Botão de Ação: Registrar Saída ou Retornar ao Terminal -->
-            <div class="flex flex-wrap items-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+            <!-- Botões de Ação -->
+            <div class="flex flex-wrap items-center gap-2.5">
                 <a href="{% url 'home' %}?tipo=SAIDA&funcionario_id={{ funcionario.id }}" 
                    id="btn-registrar-saida"
-                   class="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-sm shadow-md shadow-red-600/20 transition duration-150">
-                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Fazer Reconhecimento de Saída</span>
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-[#EF4444] hover:bg-red-600 text-white font-medium text-xs transition">
+                    Registrar saída
                 </a>
 
                 <a href="{% url 'home' %}?tipo=ENTRADA"
-                   class="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm border border-slate-200 shadow-sm transition">
-                    <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    <span>Terminal Biométrico</span>
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition">
+                    Bater ponto
                 </a>
             </div>
 
         </div>
+
+        {% if outros_funcionarios and is_admin %}
+        <!-- Seletor Rápido de Colaborador (Exclusivo Administrador) -->
+        <div id="seletor-outros-funcionarios" class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-medium">Trocar colaborador:</span>
+            <select onchange="if(this.value) window.location.href='/historico/' + this.value + '/';"
+                class="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option value="">Selecione outro...</option>
+                {% for out in outros_funcionarios %}
+                <option value="{{ out.id }}">{{ out.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
     </div>
 
-    <!-- Indicadores dos Últimos 30 Dias (Componentes Reutilizáveis) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {% include "components/metric_card.html" with titulo="Período" valor="30 dias" subtitulo="Consulta consolidada" icone="dias" cor="blue" %}
-        {% include "components/metric_card.html" with titulo="Entradas" valor=total_entradas subtitulo="Batidas de entrada" icone="entradas" cor="emerald" %}
-        {% include "components/metric_card.html" with titulo="Saídas" valor=total_saidas subtitulo="Batidas de saída" icone="saidas" cor="coral" %}
-        {% include "components/metric_card.html" with titulo="Dias Ativos" valor=dias_trabalhados subtitulo="Com presença confirmada" icone="dias" cor="purple" %}
-    </div>
-
-    <!-- Seção de Registros com Filtros -->
-    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
-
-        <!-- Header da Tabela com Filtros -->
-        <div class="p-5 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2 tracking-tight">
-                    <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                    </svg>
-                    <span>Espelho Individual de Entradas e Saídas</span>
-                </h3>
-                <p class="text-xs text-slate-500 mt-0.5 font-medium">Lista cronológica dos seus pontos batidos nos últimos 30 dias</p>
-            </div>
-
-            <!-- Filtros de Tipo com Seletores Mapeados -->
-            <div class="inline-flex p-1.5 bg-slate-100 rounded-2xl text-xs font-bold text-slate-600">
-                <a href="?tipo=TODOS" 
-                   id="filtro-tipo-todos"
-                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'TODOS' %}bg-white text-slate-900 shadow-sm{% else %}hover:text-slate-900{% endif %}">
-                    Todos ({{ total_registros }})
-                </a>
-                <a href="?tipo=ENTRADA" 
-                   id="filtro-tipo-entrada"
-                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'ENTRADA' %}bg-white text-emerald-800 shadow-sm{% else %}hover:text-slate-900{% endif %}">
-                    Entradas ({{ total_entradas }})
-                </a>
-                <a href="?tipo=SAIDA" 
-                   id="filtro-tipo-saida"
-                   class="px-3.5 py-1.5 rounded-xl transition duration-150 {% if filtro_tipo == 'SAIDA' %}bg-white text-red-800 shadow-sm{% else %}hover:text-slate-900{% endif %}">
-                    Saídas ({{ total_saidas }})
-                </a>
-            </div>
+    <!-- Linha de Resumo dos 30 Dias (em vez de cards inflados) -->
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-white px-5 py-3 rounded-lg border border-slate-200 text-xs text-slate-600">
+        <div class="flex flex-wrap items-center gap-4">
+            <span>Últimos 30 dias:</span>
+            <span><strong class="text-slate-800">{{ total_registros }}</strong> batidas</span>
+            <span class="text-slate-300">&bull;</span>
+            <span><strong class="text-emerald-700">{{ total_entradas }}</strong> entradas</span>
+            <span class="text-slate-300">&bull;</span>
+            <span><strong class="text-red-700">{{ total_saidas }}</strong> saídas</span>
+            <span class="text-slate-300">&bull;</span>
+            <span><strong class="text-slate-800">{{ dias_trabalhados }}</strong> dias trabalhados</span>
         </div>
 
-        <!-- Tabela / Lista de Pontos -->
+        <!-- Filtros de Tipo -->
+        <div class="inline-flex p-1 bg-slate-100 rounded text-xs">
+            <a href="?tipo=TODOS" 
+               id="filtro-tipo-todos"
+               class="px-2.5 py-1 rounded transition {% if filtro_tipo == 'TODOS' %}bg-white text-slate-800 font-semibold shadow-sm{% else %}text-slate-500 hover:text-slate-800{% endif %}">
+                Todos
+            </a>
+            <a href="?tipo=ENTRADA" 
+               id="filtro-tipo-entrada"
+               class="px-2.5 py-1 rounded transition {% if filtro_tipo == 'ENTRADA' %}bg-white text-emerald-800 font-semibold shadow-sm{% else %}text-slate-500 hover:text-slate-800{% endif %}">
+                Entradas
+            </a>
+            <a href="?tipo=SAIDA" 
+               id="filtro-tipo-saida"
+               class="px-2.5 py-1 rounded transition {% if filtro_tipo == 'SAIDA' %}bg-white text-red-800 font-semibold shadow-sm{% else %}text-slate-500 hover:text-slate-800{% endif %}">
+                Saídas
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabela de Pontos estilo OiTchau -->
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
         {% if pontos %}
         <div class="overflow-x-auto">
             <table id="tabela-pontos-colaborador" class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-50/80 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                        <th class="py-3.5 px-6">Data</th>
-                        <th class="py-3.5 px-6">Tipo</th>
-                        <th class="py-3.5 px-6">Horário</th>
-                        <th class="py-3.5 px-6">Método de Validação</th>
-                        <th class="py-3.5 px-6 text-right">Comprovante / Foto</th>
+                    <tr class="bg-slate-50 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-200">
+                        <th class="py-3 px-5 font-medium">Data</th>
+                        <th class="py-3 px-5 font-medium">Tipo</th>
+                        <th class="py-3 px-5 font-medium">Horário</th>
+                        <th class="py-3 px-5 font-medium text-right">Foto</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-sm">
                     {% for p in pontos %}
-                    <tr class="hover:bg-slate-50/80 transition duration-100 group">
+                    <tr class="hover:bg-slate-50/60 transition">
 
                         <!-- Data -->
-                        <td class="py-4 px-6">
-                            <div class="font-bold text-slate-900">{{ p.data|date:"d/m/Y" }}</div>
-                            <div class="text-[11px] text-slate-400 capitalize font-medium">{{ p.data|date:"l" }}</div>
+                        <td class="py-3 px-5">
+                            <span class="font-medium text-slate-800">{{ p.data|date:"d/m/Y" }}</span>
+                            <span class="text-xs text-slate-400 capitalize ml-1.5">{{ p.data|date:"l" }}</span>
                         </td>
 
-                        <!-- Tipo com Componente de Pílula -->
-                        <td class="py-4 px-6">
+                        <!-- Tipo -->
+                        <td class="py-3 px-5">
                             {% include "components/status_pill.html" with tipo=p.tipo %}
                         </td>
 
-                        <!-- Horário -->
-                        <td class="py-4 px-6">
-                            <span class="font-mono font-bold text-slate-800 text-sm tracking-wide">{{ p.hora|time:"H:i:s" }}</span>
+                        <!-- Horário (Célula estilo planilha OiTchau) -->
+                        <td class="py-3 px-5">
+                            <span class="inline-block px-2.5 py-1 rounded font-medium text-xs tabular-nums {% if p.tipo == 'ENTRADA' %}bg-emerald-50 text-emerald-800{% else %}bg-red-50 text-red-800{% endif %}">
+                                {{ p.hora|time:"H:i:s" }}
+                            </span>
                         </td>
 
-                        <!-- Método de Validação -->
-                        <td class="py-4 px-6">
-                            <div class="flex items-center gap-2 text-xs text-slate-600 font-semibold">
-                                <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                    <polyline points="9 12 11 14 15 10"></polyline>
-                                </svg>
-                                <span>Biometria Facial Autenticada</span>
-                            </div>
-                        </td>
-
-                        <!-- Comprovante / Foto Snapshot (Abre Modal Global) -->
-                        <td class="py-4 px-6 text-right">
+                        <!-- Foto Modal Trigger -->
+                        <td class="py-3 px-5 text-right">
                             {% if p.foto_registro %}
                             <button type="button"
                                     data-modal-foto-trigger
@@ -163,16 +143,11 @@ Espelho de Ponto — {{ funcionario.nome }} | BatePonto
                                     data-funcionario-nome="{{ p.funcionario.nome }}"
                                     data-tipo="{{ p.tipo }}"
                                     data-horario="{{ p.data|date:'d/m/Y' }} {{ p.hora|time:'H:i:s' }}"
-                                    class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition shadow-sm">
-                                <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                </svg>
-                                <span>Ver Foto</span>
+                                    class="text-xs text-[#0066FF] hover:underline font-medium">
+                                Ver foto
                             </button>
                             {% else %}
-                            <span class="text-xs text-slate-400 font-medium">Sem captura</span>
+                            <span class="text-xs text-slate-300">—</span>
                             {% endif %}
                         </td>
 
@@ -183,52 +158,20 @@ Espelho de Ponto — {{ funcionario.nome }} | BatePonto
         </div>
         {% else %}
         <!-- Estado Vazio -->
-        <div class="py-16 px-4 text-center">
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 shadow-inner">
-                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-            </div>
-            <h4 class="text-base font-bold text-slate-800">Nenhum registro encontrado</h4>
-            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
-                Não constam registros de {{ filtro_tipo|lower }} para este colaborador nos últimos 30 dias.
+        <div class="py-12 px-4 text-center">
+            <h4 class="text-sm font-medium text-slate-700">Nenhum registro encontrado</h4>
+            <p class="text-xs text-slate-400 mt-0.5">
+                Não constam registros nos últimos 30 dias.
             </p>
-            <div class="mt-5">
+            <div class="mt-4">
                 <a href="{% url 'home' %}?tipo=ENTRADA"
-                   class="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm">
-                    Ir para o Terminal / Registrar Ponto
+                   class="inline-flex items-center text-xs font-medium px-3.5 py-2 rounded-md bg-[#0066FF] text-white hover:bg-blue-700 transition">
+                    Bater ponto
                 </a>
             </div>
         </div>
         {% endif %}
-
     </div>
-
-    <!-- Alternar Funcionário (ESTRITAMENTE EXCLUSIVO PARA ADMINISTRADORES) -->
-    {% if outros_funcionarios and is_admin %}
-    <div id="seletor-outros-funcionarios"
-        class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 uppercase tracking-wider">Modo Gestão / Admin</span>
-                <h4 class="text-sm font-bold text-slate-900">Consultar Outro Funcionário</h4>
-            </div>
-            <p class="text-xs text-slate-500 mt-0.5 font-medium">Selecione outro colaborador cadastrado para visualizar o histórico de frequência</p>
-        </div>
-        <div class="flex items-center gap-2">
-            <select onchange="if(this.value) window.location.href='/historico/' + this.value + '/';"
-                class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione um funcionário...</option>
-                {% for out in outros_funcionarios %}
-                <option value="{{ out.id }}">{{ out.nome }} ({{ out.cpf }})</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    {% endif %}
 
 </div>
 {% endblock content %}

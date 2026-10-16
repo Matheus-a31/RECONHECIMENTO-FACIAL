@@ -1,103 +1,75 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Cadastrar Novo Colaborador | BatePonto
+Novo Colaborador | BatePonto
 {% endblock title %}
 
 {% block content %}
-<div class="max-w-xl mx-auto space-y-6">
+<div class="max-w-md mx-auto space-y-4">
 
-    <!-- Progress Indicator (Etapa 1 de 2) -->
-    <div class="flex items-center justify-between px-2">
-        <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/20">1</span>
-            <div>
-                <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Etapa 1 de 2</span>
-                <h4 class="text-xs font-bold text-slate-800">Dados do Colaborador</h4>
-            </div>
-        </div>
-        <div class="w-12 h-0.5 bg-slate-200"></div>
-        <div class="flex items-center gap-3 opacity-50">
-            <span class="w-8 h-8 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">2</span>
-            <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Etapa 2</span>
-                <h4 class="text-xs font-bold text-slate-500">Amostragem Facial</h4>
-            </div>
-        </div>
+    <!-- Indicador de Passo Simples -->
+    <div class="text-xs text-slate-400 font-medium">
+        Passo 1 de 2 &bull; Dados cadastrais
     </div>
 
     <!-- Card de Formulário -->
-    <div class="bg-white p-7 sm:p-9 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
+    <div class="bg-white p-6 sm:p-7 rounded-lg border border-slate-200 shadow-sm space-y-5">
         
-        <div class="text-center pb-6 border-b border-slate-100">
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3.5 shadow-sm">
-                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <line x1="19" y1="8" x2="19" y2="14"></line>
-                    <line x1="22" y1="11" x2="16" y2="11"></line>
-                </svg>
-            </div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Cadastro de Novo Colaborador</h1>
-            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                Insira os dados cadastrais básicos e uma fotografia de referência para iniciar o treinamento biométrico.
+        <div>
+            <h1 class="text-xl font-semibold text-slate-800">Novo colaborador</h1>
+            <p class="text-xs text-slate-400 mt-0.5">
+                Preencha os dados e anexe uma foto de referência.
             </p>
         </div>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-5">
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
 
             <div>
-                <label for="{{ form.nome.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Nome Completo
+                <label for="{{ form.nome.id_for_label }}" class="block text-xs font-medium text-slate-700 mb-1.5">
+                    Nome completo
                 </label>
                 {{ form.nome }}
                 {% if form.nome.errors %}
-                <p class="text-red-500 text-xs font-semibold mt-1.5">{{ form.nome.errors.as_text }}</p>
+                <p class="text-red-600 text-xs mt-1">{{ form.nome.errors.as_text }}</p>
                 {% endif %}
             </div>
 
             <div>
-                <label for="{{ form.cpf.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    CPF (Documento)
+                <label for="{{ form.cpf.id_for_label }}" class="block text-xs font-medium text-slate-700 mb-1.5">
+                    CPF
                 </label>
                 {{ form.cpf }}
                 {% if form.cpf.errors %}
-                <p class="text-red-500 text-xs font-semibold mt-1.5">{{ form.cpf.errors.as_text }}</p>
+                <p class="text-red-600 text-xs mt-1">{{ form.cpf.errors.as_text }}</p>
                 {% endif %}
             </div>
 
             <div>
-                <label for="{{ form.foto.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Foto Principal (Referência Facial Inicial)
+                <label for="{{ form.foto.id_for_label }}" class="block text-xs font-medium text-slate-700 mb-1.5">
+                    Foto
                 </label>
-                <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
                     {{ form.foto }}
                 </div>
                 {% if form.foto.errors %}
-                <p class="text-red-500 text-xs font-semibold mt-1.5">{{ form.foto.errors.as_text }}</p>
+                <p class="text-red-600 text-xs mt-1">{{ form.foto.errors.as_text }}</p>
                 {% endif %}
-                <p class="text-slate-400 text-[11px] font-medium mt-2 flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    Utilize uma foto frontal, sem máscara, com iluminação uniforme.
+                <p class="text-slate-400 text-xs mt-1.5">
+                    Foto de frente, sem óculos escuros ou máscara.
                 </p>
             </div>
 
-            <div class="pt-3">
+            <div class="pt-2 space-y-2">
                 <button type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-blue-600/25 transition duration-150">
-                    <span>Salvar e Prosseguir para Amostragem Facial</span>
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                        class="w-full bg-[#0066FF] hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded text-sm transition">
+                    Continuar
                 </button>
-            </div>
-
-            <div class="text-center pt-2">
-                <a href="{% url 'home' %}" class="text-xs font-bold text-slate-400 hover:text-slate-700 transition">
-                    Cancelar e Voltar ao Terminal
-                </a>
+                <div class="text-center">
+                    <a href="{% url 'home' %}" class="text-xs text-slate-400 hover:text-slate-600">
+                        Cancelar
+                    </a>
+                </div>
             </div>
 
         </form>

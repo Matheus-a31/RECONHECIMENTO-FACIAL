@@ -1,33 +1,17 @@
 <div id="flash-banner"
-    class="{% if tipo == 'sucesso' or tipo == 'entrada_sucesso' %}bg-emerald-50 border-emerald-200 text-emerald-900{% elif tipo == 'saida_sucesso' %}bg-blue-50 border-blue-200 text-blue-900{% elif tipo == 'alerta' %}bg-amber-50 border-amber-200 text-amber-900{% else %}bg-slate-50 border-slate-200 text-slate-900{% endif %} border p-4 sm:p-5 rounded-2xl shadow-sm flex items-start justify-between gap-4 transition duration-200">
-    <div class="flex items-start gap-3.5">
-        <div
-            class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 {% if tipo == 'sucesso' or tipo == 'entrada_sucesso' %}bg-emerald-600 text-white{% elif tipo == 'saida_sucesso' %}bg-blue-600 text-white{% elif tipo == 'alerta' %}bg-amber-500 text-white{% else %}bg-slate-700 text-white{% endif %} shadow-sm">
-            {% if tipo == 'alerta' %}
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
-                </path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            {% else %}
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            {% endif %}
-        </div>
+    class="{% if tipo == 'sucesso' or tipo == 'entrada_sucesso' %}bg-emerald-50 border-emerald-200 text-emerald-800{% elif tipo == 'saida_sucesso' %}bg-red-50 border-red-200 text-red-800{% elif tipo == 'alerta' %}bg-amber-50 border-amber-200 text-amber-800{% else %}bg-slate-50 border-slate-200 text-slate-800{% endif %} border p-3.5 rounded-lg flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2.5">
         <div>
-            <h4 class="text-sm font-bold tracking-tight">{{ titulo }}</h4>
-            <p class="text-xs opacity-90 mt-0.5 leading-relaxed">{{ mensagem }}</p>
+            <span class="text-sm font-semibold">{{ titulo }}</span>
+            {% if mensagem %}
+            <span class="text-xs opacity-90 ml-1.5">{{ mensagem }}</span>
+            {% endif %}
         </div>
     </div>
     {% if dismissible|default_if_none:True %}
     <button onclick="document.getElementById('flash-banner').remove()"
-        class="text-slate-400 hover:text-slate-700 p-1 rounded-lg transition" title="Fechar aviso">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+        class="text-slate-400 hover:text-slate-600 text-xs font-medium" title="Fechar">
+        Fechar
     </button>
     {% endif %}
 </div>

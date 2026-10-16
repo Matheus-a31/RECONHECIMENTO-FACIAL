@@ -1,71 +1,51 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Amostragem Facial — {{ funcionario.nome }} | BatePonto
+Fotos de {{ funcionario.nome }} | BatePonto
 {% endblock title %}
 
 {% block content %}
-<div class="max-w-xl mx-auto space-y-6">
+<div class="max-w-md mx-auto space-y-4">
 
-    <!-- Progress Indicator (Etapa 2 de 2) -->
-    <div class="flex items-center justify-between px-2">
-        <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-emerald-500/20">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Etapa 1 Concluída</span>
-                <h4 class="text-xs font-bold text-slate-800">Dados do Colaborador</h4>
-            </div>
-        </div>
-        <div class="w-12 h-0.5 bg-blue-600"></div>
-        <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/20">2</span>
-            <div>
-                <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Etapa 2 de 2</span>
-                <h4 class="text-xs font-bold text-slate-800">Amostragem Facial</h4>
-            </div>
-        </div>
+    <!-- Indicador de Passo Simples -->
+    <div class="text-xs text-slate-400 font-medium">
+        Passo 2 de 2 &bull; Fotos do rosto
     </div>
 
     <!-- Card de Coleta -->
-    <div class="bg-white p-7 sm:p-9 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
+    <div class="bg-white p-6 sm:p-7 rounded-lg border border-slate-200 shadow-sm space-y-5">
         
-        <div class="flex items-center gap-4 pb-6 border-b border-slate-100">
-            {% include "components/avatar_badge.html" with funcionario=funcionario tamanho="md" mostrar_halo=False %}
+        <div class="flex items-center gap-3.5 pb-4 border-b border-slate-100">
+            {% include "components/avatar_badge.html" with funcionario=funcionario tamanho="sm" mostrar_halo=False %}
 
             <div class="min-w-0 flex-1">
-                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider">Amostragem Facial Bioponto</span>
-                <h1 class="text-lg font-extrabold text-slate-900 truncate">{{ funcionario.nome }}</h1>
-                <p class="text-xs text-slate-500 font-mono mt-0.5">CPF: {{ funcionario.cpf }} &bull; ID: #{{ funcionario.id }}</p>
+                <h1 class="text-base font-semibold text-slate-800 truncate">{{ funcionario.nome }}</h1>
+                <p class="text-xs text-slate-400">CPF: {{ funcionario.cpf }}</p>
             </div>
         </div>
 
-        <div class="space-y-5">
-            <div class="text-center space-y-1">
-                <h3 class="text-sm font-bold text-slate-800">Alinhe o rosto no centro do quadro óptico</h3>
-                <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                    Mantenha o olhar fixo na câmera para captura de amostras que serão incorporadas ao classificador LBPH.
+        <div class="space-y-4">
+            <div class="text-center">
+                <h2 class="text-sm font-medium text-slate-700">Olhe para a câmera</h2>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    Vamos tirar algumas fotos do rosto para o reconhecimento.
                 </p>
             </div>
 
-            <!-- Moldura de Câmera Reutilizável com Visor Oval Estilo Waapi/Senior Sistemas -->
-            {% include "components/camera_hud.html" with stream_url="/face_detection/" titulo="Amostragem Biométrica Facial" reticle_type="oval" camera_badge_label="Captura Pronta" mostrar_overlay=False mostrar_rodape=False %}
+            <!-- Moldura de Câmera com Visor Oval -->
+            {% include "components/camera_hud.html" with stream_url="/face_detection/" titulo="Câmera" reticle_type="oval" camera_badge_label="Pronta" mostrar_overlay=False mostrar_rodape=False %}
 
-            <form method="post" class="space-y-3 pt-2">
+            <form method="post" class="space-y-2 pt-1">
                 {% csrf_token %}
                 <button type="submit" 
-                        class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-blue-600/25 transition duration-150">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Concluir Coleta e Treinar Modelo LBPH</span>
+                        class="w-full bg-[#0066FF] hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded text-sm transition">
+                    Concluir cadastro
                 </button>
             </form>
 
-            <div class="text-center pt-1">
-                <a href="{% url 'criar_funcionario' %}" class="text-xs font-bold text-slate-400 hover:text-slate-700 transition">
-                    &larr; Voltar para Dados Cadastrais
+            <div class="text-center">
+                <a href="{% url 'criar_funcionario' %}" class="text-xs text-slate-400 hover:text-slate-600">
+                    Voltar
                 </a>
             </div>
         </div>
