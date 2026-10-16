@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, re_path
+from registro.swagger import swagger_ui_view, openapi_schema_view
 from registro.views import (
     home,
     criar_funcionario,
@@ -33,4 +34,8 @@ urlpatterns = [
     path('api/status-reconhecimento/', api_status_reconhecimento, name='api_status_reconhecimento'),
     path('api/bater-ponto/', api_bater_ponto, name='api_bater_ponto'),
     path('api/fechar-camera/', api_fechar_camera, name='api_fechar_camera'),
+    
+    # Documentação Interativa Swagger / OpenAPI 3.0
+    re_path(r'^docs/?$', swagger_ui_view, name='swagger_docs'),
+    path('docs/schema.json', openapi_schema_view, name='openapi_schema'),
 ]
